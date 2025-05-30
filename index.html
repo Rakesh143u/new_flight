@@ -204,10 +204,10 @@
                     }
 
                     /* Hero & Form */
-                    /* .hero .panel {
+                    .hero .panel {
                       animation: fadeInUp 0.8s ease-out both;
                     }
-                    .tabs { */
+                    .tabs {
                       display: flex;
                       gap: 1rem;
                       margin-bottom: 2rem;
@@ -969,10 +969,12 @@
       <button>Login</button>
     </div>
     <div id="signupTab" class="modal-content">
-      <input type="text" placeholder="Full Name" />
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button>Create Account</button>
+      <form id="signup-form">
+        <input name="username" placeholder="Username" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Create Account</button>
+      </form>
     </div>
   </div>
 </div>
@@ -991,7 +993,8 @@
         <a href="#" title="Search"><i class="fas fa-search"></i></a>
         <a href="#" title="Profile"><i class="fas fa-user-circle"></i></a>
       </div>
-      <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+      <div class="menu-toggle"><i class="fas fa-bars"></i>
+      </div>
     </nav>
 
     <main>
@@ -1461,5 +1464,85 @@
     document.getElementById('authModal').style.display = 'flex';
   });
 </script>
+<script>
+      document.querySelector('#whatson-form form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const fields = this.querySelectorAll('input');
+  const data = {
+    departure: fields[0].value,
+    arrival: fields[1].value,
+    date: fields[2].value
+  };
+  fetch('http://localhost:3000/api/whatson', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(services => {
+    // Display the inflight services info
+    let html = '<h3>What\'s on your flight:</h3>';
+    if (services.length === 0) {
+      html += '<p>No inflight services found for this flight.</p>';
+    } else {
+      services.forEach(s => {
+        html += `<div>
+          <strong>${s.service_name}</strong>: ${s.description}
+        </div>`;
+      });
+    }
+    document.querySelector('#whatson-form').innerHTML = html;
+  });
+});
+    </script>
+    <script>
+document.querySelector('#signup-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const username = this.username.value;
+  const email = this.email.value;
+  const password = this.password.value;
+
+  fetch('http://localhost:3000/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert('Signup failed: ' + data.error);
+    } else {
+      alert('Signup successful!');
+      // Optionally, close modal or switch to login tab
+      document.getElementById('authModal').style.display = 'none';
+    }
+  })
+  .catch(() => alert('Signup failed: Server error'));
+});
+    </script>
+    <script>
+document.querySelector('#loginTab button').addEventListener('click', function(e) {
+  e.preventDefault();
+  const email = document.querySelector('#loginTab input[type="email"]').value;
+  const password = document.querySelector('#loginTab input[type="password"]').value;
+
+  fetch('http://localhost:3000/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert('Login failed: ' + data.error);
+    } else {
+      alert('Login successful!');
+      document.getElementById('authModal').style.display = 'none';
+      // Optionally, store user info or redirect
+    }
+  })
+  .catch(() => alert('Login failed: Server error'));
+});
+    </script>
   </body>
 </html>
