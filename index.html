@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voyage Vista – Premium Travel Interface</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+                    :root {
+                      --primary: #0a0f2c;
+                      --secondary: #c5a47e;
+                      --accent: #ffffff;
+                      --font-sans: "Inter", sans-serif;
+                      --font-heading: "Poppins", sans-serif;
+                      --font-serif: "Playfair Display", serif;
+                      --transition-time: 0.4s;
+                      --gradient-primary: linear-gradient(135deg, #0a0f2c 0%, #1a1f3c 100%);
+                    }
+                    *,
+                    *::before,
+                    *::after {
+                      box-sizing: border-box;
+                      margin: 0;
+                      padding: 0;
+                    }
+                    html {
+                      scroll-behavior: smooth;
+                      height: 100%;
+                      overflow-x: hidden;
+                    }
+                    body {
+                      font-family: var(--font-sans);
+                      color: var(--primary);
+                      background: #fff;
+                      height: 100%;
+                      overflow-y: auto;
+                      -webkit-overflow-scrolling: touch;
+                    }
+
+                    /* Navigation */
+                    nav {
+                      position: fixed;
+                      top: 0;
+                      width: 100%;
+                      padding: 1rem 5%;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      background: var(--gradient-primary);
+                      backdrop-filter: blur(12px);
+                      z-index: 1000;
+                      transition: background var(--transition-time),
+                        padding var(--transition-time);
+                    }
+                    nav.scrolled {
+                      background: var(--primary);
+                      padding: 0.5rem 5%;
+                    }
+                    .logo {
+        margin-right: 2rem;
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+        background: linear-gradient(45deg, #c5a47e, #e8d9b5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+                    .nav-links {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        flex: 1;
+                    }
+                    .nav-icons {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        margin-left: 2rem;
+      }
+      .nav-icons a {
+        color: var(--accent);
+        font-size: 1.3rem;
+        transition: color var(--transition-time);
+      }
+      .nav-icons a:hover {
+        color: var(--secondary);
+      }
+                    .nav-links a {
+                      color: var(--accent);
+                      text-decoration: none;
+                      font-family: var(--font-heading);
+                      font-weight: 500;
+                      letter-spacing: 0.05em;
+                      position: relative;
+                      transition: color var(--transition-time);
+                    }
+                    .nav-links a::after {
+                      content: "";
+                      position: absolute;
+                      bottom: -2px;
+                      left: 0;
+                      height: 2px;
+                      width: 0;
+                      background: var(--secondary);
+                      transition: width var(--transition-time);
+                    }
+                    .nav-links a:hover {
+                      color: var(--secondary);
+                    }
+                    .nav-links a:hover::after {
+                      width: 100%;
+                    }
+                    .menu-toggle {
+                      display: none;
+                      font-size: 1.5rem;
+                      color: var(--accent);
+                      cursor: pointer;
+                    }
+                    @media (max-width: 1024px) {
+                      .nav-links {
+                        display: none;
+                        flex-direction: column;
+                        background: var(--primary);
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        width: 100%;
+                        padding: 1rem;
+                      }
+                      .menu-toggle {
+                        display: block;
+                      }
+                    }
+
+                    /* Layout & Panels */
+                    main {
+                      scroll-snap-type: y mandatory;
+                      padding-top: 90px;
+                    }
+                    section {
+                      scroll-snap-align: start;
+                      width: 100%;
+
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      position: relative;
+                      overflow: hidden;
+                      background: #fff;
+                      padding: 6rem 5% 4rem;
+                    }
+                    .panel {
+                      position: relative;
+                      z-index: 1;
+                      background: #fff;
+                      padding: 2rem;
+                      border-radius: 16px;
+                      max-width: 900px;
+                      width: 90%;
+                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+                    }
+
+                    /* Animations */
+                    @keyframes fadeIn {
+                      from {
+                        opacity: 0;
+                      }
+                      to {
+                        opacity: 1;
+                      }
+                    }
+                    @keyframes fadeInUp {
+                      from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                      }
+                      to {
+                        opacity: 1;
+                        transform: translateY(0);
+                      }
+                    }
+                    @keyframes fadeInDown {
+                      from {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                      }
+                      to {
+                        opacity: 1;
+                        transform: translateY(0);
+                      }
+                    }
+
+                    /* Hero & Form */
+                    /* .hero .panel {
+                      animation: fadeInUp 0.8s ease-out both;
+                    }
+                    .tabs { */
+                      display: flex;
+                      gap: 1rem;
+                      margin-bottom: 2rem;
+                    }
+                    .tabs button {
+                      flex: 1;
+                      padding: 1rem;
+                      font-family: var(--font-heading);
+                      font-weight: 600;
+                      background: transparent;
+                      border: none;
+                      cursor: pointer;
+                      position: relative;
+                      transition: color var(--transition-time);
+                    }
+                    .tabs button::after {
+                      content: "";
+                      position: absolute;
+                      bottom: -4px;
+                      left: 50%;
+                      width: 0;
+                      height: 3px;
+                      background: var(--secondary);
+                      transition: width var(--transition-time), left var(--transition-time);
+                    }
+                    .tabs button.active {
+                      color: var(--primary);
+                    }
+                    .tabs button.active::after {
+                      width: 50%;
+                      left: 25%;
+                    }
+
+                    .form-grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                      gap: 1.5rem;
+                    }
+                    .field {
+                      position: relative;
+                      background: #fff;
+                      border-radius: 12px;
+                      padding: 0.8rem 1rem 0.8rem 3.5rem;
+                      border: 1px solid #ddd;
+                      transition: transform var(--transition-time),
+                        box-shadow var(--transition-time);
+                    }
+                    .field:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+                    }
+                    .field i {
+                      position: absolute;
+                      top: 50%;
+                      left: 1rem;
+                      transform: translateY(-50%);
+                      font-size: 1.2rem;
+                      color: var(--primary);
+                    }
+                    .field input,
+                    .field select {
+                      width: 100%;
+                      border: none;
+                      background: transparent;
+                      font-family: var(--font-sans);
+                      font-size: 1rem;
+                      color: var(--primary);
+                      padding: 0.8rem 0;
+                    }
+                    .search-btn {
+                      grid-column: 1/-1;
+                      padding: 1.2rem;
+                      font-family: var(--font-heading);
+                      font-size: 1.1rem;
+                      font-weight: 700;
+                      background: var(--secondary);
+                      color: var(--primary);
+                      border: none;
+                      border-radius: 12px;
+                      cursor: pointer;
+                      transition: transform var(--transition-time),
+                        box-shadow var(--transition-time);
+                    }
+                    .search-btn:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 12px 30px rgba(197, 164, 126, 0.3);
+                    }
+
+                    /* Services */
+                    .services-grid {
+                      display: flex;
+                      flex-wrap: wrap;
+                      justify-content: space-between;
+                      gap: 1rem;
+                    }
+                    .service {
+                      flex: 1 1 calc(14% - 1rem);
+                      text-decoration: none;
+                      color: var(--primary);
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      padding: 1rem;
+                      border: 1px solid #ddd;
+                      border-radius: 8px;
+                      background: #fff;
+                      transition: transform var(--transition-time),
+                        box-shadow var(--transition-time);
+                    }
+                    .service i {
+                      font-size: 1.5rem;
+                      margin-bottom: 0.5rem;
+                      color: var(--secondary);
+                    }
+                    .service span {
+                      font-size: 0.9rem;
+                      text-align: center;
+                    }
+                    .service:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                    }
+
+                    /* Skywards Banner */
+                    .banner-panel {
+                      display: flex;
+                      align-items: center;
+                      gap: 2rem;
+                      padding: 1rem;
+                      background: #000;
+                      color: #fff;
+                      border-radius: 8px;
+                      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+                    }
+                    .banner-content {
+                      display: flex;
+                      align-items: center;
+                      gap: 1.5rem;
+                      width: 100%;
+                    }
+                    .banner-content .levels img {
+                      height: 50px;
+                    }
+                    .banner-content .text h3 {
+                      margin: 0;
+                      font-family: var(--font-heading);
+                      font-size: 1.2rem;
+                    }
+                    .banner-content .text p {
+                      margin: 0;
+                      font-size: 0.9rem;
+                    }
+                    .banner-content .em-btn {
+                      margin-left: auto;
+                      padding: 0.8rem 1.5rem;
+                      background: var(--secondary);
+                      color: var(--primary);
+                      border: none;
+                      border-radius: 4px;
+                      cursor: pointer;
+                      transition: opacity var(--transition-time);
+                    }
+                    .banner-content .em-btn:hover {
+                      opacity: 0.9;
+                    }
+
+                    /* Destinations */
+                    .destinations {
+                      flex-direction: column;
+                      padding: 4rem 5%;
+                    }
+                    .destinations h2 {
+                      font-family: var(--font-heading);
+                      font-size: 2.2rem;
+                      margin-bottom: 2rem;
+                      text-align: center;
+                      animation: fadeIn 0.8s ease-out both;
+                    }
+                    .destinations-grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                      gap: 2rem;
+                    }
+                    .dest-card {
+                      background: #fff;
+                      border-radius: 12px;
+                      overflow: hidden;
+                      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+                      transition: transform var(--transition-time);
+                    }
+                    .dest-card:hover {
+                      transform: translateY(-6px);
+                    }
+                    .dest-card img {
+                      width: 100%;
+                      height: 200px;
+                      object-fit: cover;
+                    }
+                    .dest-card-info {
+                      padding: 1.5rem;
+                      text-align: center;
+                    }
+                    .dest-card-info h3 {
+                      margin-bottom: 0.5rem;
+                      font-family: var(--font-serif);
+                    }
+                    .dest-card-info span {
+                      color: var(--secondary);
+                      font-weight: 600;
+                    }
+
+                    /* Benefits */
+                    .benefits {
+                      flex-direction: column;
+                      padding: 4rem 5%;
+                    }
+                    .benefits .panel {
+                      max-width: 800px;
+                      text-align: center;
+                      animation: fadeInDown 0.8s ease-out both;
+                    }
+
+                    /* Classes */
+                    .classes {
+                      background: #fafafa;
+                      padding: 6rem 5%;
+                    }
+                    .classes h2 {
+                      font-family: var(--font-serif);
+                      font-size: 2.5rem;
+                      margin-bottom: 4rem;
+                      position: relative;
+                      display: inline-block;
+                    }
+                    .classes h2::after {
+                      content: "";
+                      position: absolute;
+                      bottom: -15px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      width: 60px;
+                      height: 3px;
+                      background: var(--secondary);
+                    }
+                    .class-grid {
+                      display: grid;
+                      grid-template-columns: repeat(4, 1fr);
+                      gap: 3rem;
+                      max-width: 1400px;
+                      margin: 0 auto;
+                    }
+                    .class-card {
+                      background: var(--accent);
+                      border-radius: 16px;
+                      overflow: hidden;
+                      box-shadow: 0 12px 40px rgba(10, 15, 44, 0.08);
+                      transition: all var(--transition-time)
+                        cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                      position: relative;
+                      animation: cardEntrance 0.6s ease-out both;
+                    }
+                    .class-card::before {
+                      content: "";
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      right: 0;
+                      bottom: 0;
+                      background: linear-gradient(
+                        45deg,
+                        rgba(197, 164, 126, 0.1) 0%,
+                        rgba(255, 255, 255, 0) 100%
+                      );
+                      z-index: 1;
+                    }
+                    .class-card:hover {
+                      transform: translateY(-10px) scale(1.02);
+                      box-shadow: 0 24px 60px rgba(10, 15, 44, 0.15);
+                    }
+                    .class-card img {
+                      height: 240px;
+                      object-position: center;
+                      transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+                    }
+                    .class-card:hover img {
+                      transform: scale(1.05);
+                    }
+                    .class-card-info {
+                      padding: 2rem;
+                      position: relative;
+                      z-index: 2;
+                      background: var(--accent);
+                    }
+                    .class-card-info h3 {
+                      font-family: var(--font-serif);
+                      font-size: 1.5rem;
+                      margin-bottom: 1rem;
+                      color: var(--primary);
+                      position: relative;
+                      padding-bottom: 0.5rem;
+                    }
+                    .class-card-info h3::after {
+                      content: "";
+                      position: absolute;
+                      bottom: 0;
+                      left: 0;
+                      width: 40px;
+                      height: 2px;
+                      background: var(--secondary);
+                    }
+                    .class-card-info p {
+                      color: #666;
+                      font-size: 1rem;
+                      line-height: 1.6;
+                      margin-bottom: 1.5rem;
+                    }
+                    .class-card-info::before {
+                      content: "";
+                      position: absolute;
+                      top: -20px;
+                      left: 0;
+                      right: 0;
+                      height: 20px;
+                      background: linear-gradient(
+                        to bottom,
+                        rgba(255, 255, 255, 0),
+                        var(--accent)
+                      );
+                    }
+                    @keyframes cardEntrance {
+                      from {
+                        opacity: 0;
+                        transform: translateY(20px) scale(0.95);
+                      }
+                      to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                      }
+                    }
+                    @media (max-width: 1200px) {
+                      .class-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 2rem;
+                      }
+                    }
+                    @media (max-width: 768px) {
+                      .class-grid {
+                        grid-template-columns: 1fr;
+                      }
+                      .classes h2 {
+                        font-size: 2rem;
+                      }
+                    }
+                    * {
+                      box-sizing: border-box;
+                      margin: 0;
+                      padding: 0;
+                    }
+                    body {
+                      font-family: "Inter", sans-serif;
+                      background: #fff;
+                      color: var(--primary);
+                    }
+                    nav {
+                      /* your nav styles… */
+                    }
+
+                    /* Hero panel + tabs */
+                    /* .hero {
+                      padding: 6rem 5%;
+                      background: #fafafa;
+                    } */
+                    .panel {
+                      max-width: 900px;
+                      margin: 0 auto;
+                      background: #fff;
+                      border-radius: 16px;
+                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+                      overflow: hidden;
+                    }
+                    .tabs {
+                      display: flex;
+                      background: #fff;
+                      border-bottom: 1px solid #ddd;
+                      border-top-left-radius: 32px;   /* Add this */
+                      border-top-right-radius: 32px;  /* Add this */
+                      overflow: hidden;
+                    }
+                    .tabs button {
+                      flex: 1;
+                      padding: 1rem 0;
+                      font-family: "Poppins", sans-serif;
+                      font-weight: 600;
+                      background: none;
+                      border: none;
+                      cursor: pointer;
+                      position: relative;
+                      transition: color var(--transition);
+                    }
+                    .tabs button.active {
+                      color: var(--primary);
+                    }
+                    .tabs button.active::after {
+                      content: "";
+                      position: absolute;
+                      bottom: 0;
+                      left: 10%;
+                      width: 80%;
+                      height: 4px;
+                      background: var(--secondary);
+                      border-radius: 2px 2px 0 0;
+                    }
+                    .tabs button:not(.active):hover {
+                      color: var(--secondary);
+                    }
+
+                    /* tab contents */
+                    .tab-content {
+                      display: none;
+                      padding: 2rem;
+                      animation: fadeInUp 0.6s both;
+                    }
+                    .tab-content.active {
+                      display: block;
+                    }
+
+                    /* form grid & fields (re-use yours) */
+                    .form-grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                      gap: 1.5rem;
+                    }
+                    .field {
+                      position: relative;
+                      padding: 0.8rem 1rem 0.8rem 3.5rem;
+                      border: 1px solid #ddd;
+                      border-radius: 12px;
+                      transition: transform var(--transition), box-shadow var(--transition);
+                    }
+                    .field:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+                    }
+                    .field i {
+                      position: absolute;
+                      top: 50%;
+                      left: 1rem;
+                      transform: translateY(-50%);
+                      color: var(--primary);
+                      font-size: 1.2rem;
+                    }
+                    .field input,
+                    .field select {
+                      width: 100%;
+                      border: none;
+                      background: transparent;
+                      font-size: 1rem;
+                      padding: 0.8rem 0;
+                    }
+                    .search-btn {
+                      grid-column: 1 / -1;
+                      padding: 1.2rem;
+                      font-family: "Poppins", sans-serif;
+                      font-weight: 700;
+                      border: none;
+                      border-radius: 12px;
+                      cursor: pointer;
+                      transition: transform var(--transition), box-shadow var(--transition);
+                    }
+                    .search-btn.primary {
+                      background: var(--secondary);
+                      color: var(--primary);
+                    }
+                    .search-btn.primary:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 12px 30px rgba(197, 164, 126, 0.3);
+                    }
+
+                    @keyframes fadeInUp {
+                      from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                      }
+                      to {
+                        opacity: 1;
+                        transform: translateY(0);
+                      }
+                    }
+
+                    /* Modal styles */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10,15,44,0.45);
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+  }
+  .modal-window {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    padding: 2.5rem 2rem 2rem 2rem;
+    min-width: 320px;
+    max-width: 95vw;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInUp 0.5s;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+    z-index: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover {
+    color: var(--primary);
+  }
+  .modal-window h2 {
+    font-family: var(--font-serif);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--primary);
+  }
+  .modal-window .tabs {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  .modal-window .tabs button {
+    flex: 1;
+    padding: 0.8rem 0;
+    border: none;
+    background: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: #888;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .modal-window .tabs button.active {
+    background: var(--secondary);
+    color: var(--primary);
+  }
+  .modal-content {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    animation: fadeInUp 0.4s;
+  }
+  .modal-content.active {
+    display: flex;
+  }
+  .modal-content input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-sans);
+  }
+  .modal-content button {
+    padding: 1rem;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+  }
+  .modal-content button:hover {
+    background: var(--secondary);
+    color: var(--primary);
+  }
+                    /* Footer */
+                    .options {
+                      flex-direction: column;
+                      padding: 3rem 5%;
+                      color: var(--primary);
+                    }
+                    .options .footer-grid {
+                      display: grid;
+                      gap: 1.5rem;
+                    }
+                    @media (min-width: 768px) {
+                      .options .footer-grid {
+                        grid-template-columns: repeat(4, 1fr);
+                      }
+                    }
+                    .options h4 {
+                      font-family: var(--font-serif);
+                      margin-bottom: 0.5rem;
+                    }
+                    .options a {
+                      color: var(--primary);
+                      text-decoration: none;
+                      margin-bottom: 0.5rem;
+                      transition: color var(--transition-time);
+                    }
+                    .options a:hover {
+                      color: var(--secondary);
+                    }
+                    .copyright {
+                      padding: 1rem 5%;
+                      text-align: center;
+                      color: var(--primary);
+                      font-size: 0.9rem;
+                    }
+                    /* Hero background and overlay */
+                    .hero {
+                      padding-top: 0;
+                       position: relative;
+            width: 100%;
+            min-height: 480px; /* or 60vh, or any value that fits your design */
+            padding: 1rem 5% 4rem;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+                    }
+                    .hero-bg {
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      width: 100%;
+                      height: 100%;
+                      background: url("/img.jpg")
+                        center/cover no-repeat;
+                      filter: brightness(1.0);
+                      z-index: 0;
+                      transition: none;
+                    }
+                    .hero .panel {
+                      /* Remove absolute positioning and negative bottom */
+                      /* position: absolute;
+                bottom: -90px;
+                left: 15%;
+                transform: translateX(-50%);
+                width: 75%; */
+                      position: relative;
+                      margin: 0 ;
+                      width: 90%;
+                      max-width: 1200px;
+                      background:  rgba(255,255,255,0.65);
+                       backdrop-filter: blur(1px);
+                      border-radius: 16px;
+                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+                      overflow: hidden;
+                      padding-top: 2rem;
+                      z-index: 1;
+                    }
+                    .hero .panel > *:first-child {
+                      margin-top: 0 !important;
+                    }
+                    /* Feedback Button */
+                    .feedback-btn {
+                      position: fixed;
+                      right: 1rem;
+                      bottom: 2rem;
+                      background: var(--secondary);
+                      color: var(--primary);
+                      border: none;
+                      border-radius: 50%;
+                      width: 60px;
+                      height: 60px;
+                      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                      cursor: pointer;
+                      font-size: 1.5rem;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      transition: background var(--transition), transform var(--transition);
+                    }
+                    .feedback-btn:hover {
+                      background: var(--primary);
+                      color: var(--accent);
+                      transform: scale(1.1);
+                    }
+
+                    /* Modal backdrop */
+  .modal-backdrop {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6); display: flex;
+    align-items: center; justify-content: center;
+    z-index: 2000;
+  }
+  /* Modal window */
+  .modal-window {
+    background: #fff; border-radius: 12px;
+    width: 360px; max-width: 90%; padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  .modal-window h2 { margin-bottom: 1rem; font-family:'Poppins',sans-serif; }
+  .modal-window .tabs {
+    display: flex; gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .modal-window .tabs button {
+    flex:1; padding:0.5rem; background:none; border:none;
+    border-bottom: 2px solid transparent; font-weight:600;
+    cursor: pointer; transition: border-color .3s;
+  }
+  .modal-window .tabs button.active {
+    border-color: var(--secondary);
+  }
+  .modal-content { display: none; }
+  .modal-content.active { display: block; }
+  .modal-content input {
+    width:100%; padding:0.8rem; margin-bottom:1rem;
+    border:1px solid #ddd; border-radius:8px;
+  }
+  .modal-content button {
+    width:100%; padding:0.8rem; background:var(--secondary);
+    color:var(--primary); border:none; border-radius:8px;
+    font-weight:600; cursor:pointer;
+  }
+  /* Close “X” */
+  .modal-close {
+    position: absolute; top:0.5rem; right:0.5rem;
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+  }
+    </style>
+  </head>
+  <body>
+    <div class="modal-backdrop" id="authModal">
+  <div class="modal-window">
+    <button class="modal-close" aria-label="Close">&times;</button>
+    <h2>Welcome to Voyage Vista</h2>
+    <div class="tabs">
+      <button class="active" data-tab="loginTab">Login</button>
+      <button data-tab="signupTab">Sign Up</button>
+    </div>
+    <div id="loginTab" class="modal-content active">
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <button>Login</button>
+    </div>
+    <div id="signupTab" class="modal-content">
+      <input type="text" placeholder="Full Name" />
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <button>Create Account</button>
+    </div>
+  </div>
+</div>
+    <nav id="navbar">
+      <div class="logo">Voyage Vista</div>
+      <div class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#services">Services</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#classes">Classes</a>
+        <a href="#about">About</a>
+      </div>
+      <div class="nav-icons">
+        <a href="#" title="Language"><i class="fas fa-globe"></i></a>
+        <a href="#" title="Search"><i class="fas fa-search"></i></a>
+        <a href="#" title="Profile"><i class="fas fa-user-circle"></i></a>
+      </div>
+      <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <main>
+      <!-- Hero Section with passenger & class selector -->
+      <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="panel">
+          <div class="tabs">
+            <button class="tab-btn active" data-target="search-form">
+              <i class="fas fa-plane"></i> Search flights
+            </button>
+            <button class="tab-btn" data-target="manage-form">
+              <i class="fas fa-tag"></i> Manage booking / Check in
+            </button>
+            <button class="tab-btn" data-target="whatson-form">
+              <i class="fas fa-pen-nib"></i> What's on your flight
+            </button>
+            <button class="tab-btn" data-target="status-form">
+              <i class="fas fa-clock"></i> Flight status
+            </button>
+          </div>
+          <div class="tab-content active" id="search-form">
+            <form class="form-grid">
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input placeholder="Departure airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input placeholder="Arrival airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-calendar-alt"></i><input type="date" />
+              </div>
+              <div class="field">
+                <i class="fas fa-user"></i
+                ><input type="number" min="1" value="1" placeholder="Adults" />
+              </div>
+              <div class="field">
+                <i class="fas fa-child"></i
+                ><input
+                  type="number"
+                  min="0"
+                  value="0"
+                  placeholder="Children"
+                />
+              </div>
+              <div class="field">
+                <i class="fas fa-couch"></i>
+                <select>
+                  <option>First Class</option>
+                  <option>Business Class</option>
+                  <option>Premium Economy</option>
+                  <option>Economy Class</option>
+                </select>
+              </div>
+              <button class="search-btn" type="submit">Search Flights</button>
+            </form>
+          </div>
+          <div class="tab-content" id="manage-form">
+            <form class="form-grid">
+              <div class="field">
+                <i class="fas fa-user"></i
+                ><input type="text" placeholder="Last name" />
+              </div>
+              <div class="field">
+                <i class="fas fa-ticket-alt"></i
+                ><input type="text" placeholder="Booking reference" />
+              </div>
+              <button class="search-btn" type="submit">Manage booking</button>
+              <button class="search-btn" type="submit">Check in</button>
+            </form>
+          </div>
+          <div class="tab-content" id="whatson-form">
+            <form class="form-grid">
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input type="text" placeholder="Departure airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input type="text" placeholder="Arrival airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-calendar-alt"></i><input type="date" />
+              </div>
+              <button class="search-btn" type="submit">
+                See what's on <i class="fas fa-arrow-right"></i>
+              </button>
+            </form>
+          </div>
+          <div class="tab-content" id="status-form">
+            <form class="form-grid">
+              <div class="field">
+                <i class="fas fa-route"></i>
+                <label>
+                  <input type="radio" name="status-mode" checked /> Route
+                </label>
+                <label style="margin-left: 1rem">
+                  <input type="radio" name="status-mode" /> Flight number
+                </label>
+              </div>
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input type="text" placeholder="Departure airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-map-marker-alt"></i
+                ><input type="text" placeholder="Arrival airport" />
+              </div>
+              <div class="field">
+                <i class="fas fa-calendar-alt"></i><input type="date" />
+              </div>
+              <button class="search-btn" type="submit">Check status</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services -->
+      <section id="services" class="services">
+        <div class="panel services-grid">
+          <a class="service" href="#"
+            ><i class="fas fa-hotel"></i><span>Hotels</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-car"></i><span>Car rentals</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-umbrella-beach"></i
+            ><span>Tours & activities</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-sun"></i><span>Book a holiday</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-user-tie"></i><span>Chauffeur-drive</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-handshake"></i><span>Meet & Greet</span></a
+          >
+          <a class="service" href="#"
+            ><i class="fas fa-bus"></i><span>Airport transfers</span></a
+          >
+        </div>
+      </section>
+
+      <!-- Skywards Banner -->
+      <section class="banner-skywards">
+        <div class="panel banner-panel">
+          <div class="banner-content">
+            <div class="levels">
+              <img
+                src="/mnt/data/60eefb2e-82b5-4576-a2ae-8e62aa8fcb01.png"
+                alt="Skywards Levels"
+              />
+            </div>
+            <div class="text">
+              <h3>Join Emirates Skywards</h3>
+              <p>
+                Become an Emirates Skywards member and start enjoying flight
+                rewards, upgrades and more
+              </p>
+            </div>
+            <button class="em-btn">Join now</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Destinations -->
+      <section id="destinations" class="destinations">
+        <div class="panel">
+          <h2>Featured Destinations</h2>
+          <div class="destinations-grid">
+            <div class="dest-card">
+              <img
+                src="/dubai-marina-beauty-view-rooftop-showing-cityscape-boats-sea-view-51444879.webp"
+                alt="Destination 1"
+              />
+              <div class="dest-card-info">
+                <h3>Dubai</h3>
+                <span>From INR 25,000*</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="/112313239.webp" alt="Destination 2" />
+              <div class="dest-card-info">
+                <h3>London</h3>
+                <span>From INR 40,000*</span>i
+              </div>
+            </div>
+            <div class="dest-card">
+              <img
+                src="/eiffel-tower-paris-france-EIFFEL0217-6ccc3553e98946f18c893018d5b42bde.jpg"
+                alt="Destination 3"
+              />
+              <div class="dest-card-info">
+                <h3>Paris</h3>
+                <span>From INR 55,000*</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Benefits -->
+      <section id="benefits" class="benefits">
+        <div class="panel">
+          <h2>Enhance Your Benefits with Skywards+</h2>
+          <p>
+            Enjoy lounge access, extra baggage allowance, exclusive discounts,
+            and more.
+          </p>
+        </div>
+      </section>
+
+      <!-- Classes -->
+      <section id="classes" class="classes">
+        <h2>Experience Luxury Travel</h2>
+        <div class="class-grid">
+          <div class="class-card">
+            <img
+              src="/636462447474375477-First-Class-fully-flat-bed.webp"
+              alt="First Class"
+            />
+            <div class="class-card-info">
+              <h3>First Class</h3>
+              <p>
+                Private suites with sliding doors, personal minibar, and
+                24-karat gold accents.
+              </p>
+              <div class="class-features">
+                <div><i class="fas fa-spa"></i> Onboard Spa</div>
+                <div><i class="fas fa-utensils"></i> Gourmet Dining</div>
+              </div>
+            </div>
+          </div>
+          <div class="class-card">
+            <img
+              src="/Emirates-B777-Classe-Affaires-16-1024x768.jpg"
+              alt="Business Class"
+            />
+            <div class="class-card-info">
+              <h3>Business Class</h3>
+              <p>
+                Lie-flat seats, chef-curated menus, priority boarding, and
+                personal lounge access.
+              </p>
+              <div class="class-features">
+                <div><i class="fas fa-couch"></i> Lounge Access</div>
+                <div><i class="fas fa-handshake"></i> Concierge Service</div>
+              </div>
+            </div>
+          </div>
+          <div class="class-card">
+            <img src="/img_0820.avif" alt="Premium Economy" />
+            <div class="class-card-info">
+              <h3>Premium Economy</h3>
+              <p>
+                Extra legroom, enhanced meals, dedicated cabin crew, and amenity
+                kits.
+              </p>
+              <div class="class-features">
+                <div><i class="fas fa-chair"></i> Extra Legroom</div>
+                <div><i class="fas fa-wine-glass"></i> Enhanced Meals</div>
+              </div>
+            </div>
+          </div>
+          <div class="class-card">
+            <img src="/img_0859.avif" alt="Economy Class" />
+            <div class="class-card-info">
+              <h3>Economy Class</h3>
+              <p>
+                Comfortable seating, inflight entertainment, and complimentary
+                refreshments.
+              </p>
+              <div class="class-features">
+                <div><i class="fas fa-film"></i> Entertainment</div>
+                <div><i class="fas fa-coffee"></i> Refreshments</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="about">
+        <div class="panel">
+          <h2>About Us</h2>
+          <p>
+            At Voyage Vista, we believe in redefining travel with exceptional
+            service and innovative experiences. From seamless bookings to
+            personalized in-flight amenities, our commitment is to make every
+            journey memorable.
+          </p>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <section class="options">
+        <div class="footer-grid">
+          <div>
+            <h4>About</h4>
+            <a href="#">Our Story</a><a href="#">Sustainability</a
+            ><a href="#">Careers</a>
+          </div>
+          <div>
+            <h4>Explore</h4>
+            <a href="#">Route Map</a><a href="#">Destinations</a
+            ><a href="#">Cabin Classes</a>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <a href="#">Help Center</a><a href="#">Flight Status</a
+            ><a href="#">Contact Us</a>
+          </div>
+          <div>
+            <h4>Connect</h4>
+            <a href="#"><i class="fab fa-facebook-square"></i> Facebook</a
+            ><a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+          </div>
+        </div>
+      </section>
+      <div class="copyright">© 2025 Voyage Vista. All rights reserved.</div>
+    </main>
+
+    <script>
+      // Mobile nav toggle
+      document.querySelector(".menu-toggle").addEventListener("click", () => {
+        document.querySelector(".nav-links").classList.toggle("active");
+      });
+      // Navbar scroll effect
+      const navbar = document.getElementById("navbar");
+      window.addEventListener("scroll", () => {
+        navbar.classList.toggle("scrolled", window.scrollY > 50);
+      });
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // deactivate all
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((p) => p.classList.remove("active"));
+          // activate clicked + its panel
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.target).classList.add("active");
+        });
+      });
+    </script>
+    <!-- ...existing code... -->
+    <button class="feedback-btn" aria-label="Feedback">
+      <i class="fas fa-comment-dots"></i>
+    </button>
+    <!-- ...existing code... -->
+    <script>
+      // Feedback button functionality
+      document.querySelector(".feedback-btn").addEventListener("click", () => {
+        alert("Thank you for your feedback!");
+      });
+    </script>
+
+    <!-- Cookie Consent Modal -->
+    <div class="cookie-consent" id="cookieConsent">
+        <div class="cookie-text">
+            We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies. 
+            <a href="/privacy-policy" target="_blank">Learn more</a>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn cookie-accept" id="acceptCookies">Accept</button>
+            <button class="cookie-btn cookie-decline" id="declineCookies">Decline</button>
+        </div>
+    </div>
+    <script>
+        // Cookie consent functionality
+        const cookieConsent = document.getElementById('cookieConsent');
+        const acceptCookies = document.getElementById('acceptCookies');
+        const declineCookies = document.getElementById('declineCookies');
+
+        if(cookieConsent && acceptCookies && declineCookies && !localStorage.getItem('cookiesAccepted')) {
+            setTimeout(() => {
+                cookieConsent.classList.add('active');
+            }, 1000);
+        }
+        if(acceptCookies) acceptCookies.addEventListener('click', () => {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieConsent.classList.remove('active');
+        });
+        if(declineCookies) declineCookies.addEventListener('click', () => {
+            localStorage.setItem('cookiesDeclined', 'true');
+            cookieConsent.classList.remove('active');
+        });
+    </script>
+    <style>
+        .cookie-consent {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 1.5rem;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 10000;
+            transition: bottom 0.5s ease-in-out;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 8px 8px 0 0;
+        }
+        .cookie-consent.active {
+            bottom: 0;
+        }
+        .cookie-text {
+            flex: 1;
+            min-width: 300px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .cookie-text a {
+            color: var(--primary-color, #0A0F2C);
+            text-decoration: none;
+        }
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        .cookie-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .cookie-btn:hover {
+            transform: translateY(-2px);
+        }
+        .cookie-accept {
+            background: var(--primary-color, #0A0F2C);
+            color: white;
+        }
+        .cookie-decline {
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+    <script>
+  // Tabs inside modal
+  document.querySelectorAll('.modal-window .tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      document.querySelectorAll('.modal-window .tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.modal-content').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+  // Close modal
+  document.querySelector('.modal-close').addEventListener('click', ()=>{
+    document.getElementById('authModal').style.display = 'none';
+  });
+  // Prevent interacting with page until closed
+  window.addEventListener('load', ()=>{
+    document.getElementById('authModal').style.display = 'flex';
+  });
+</script>
+  </body>
+</html>
