@@ -683,7 +683,7 @@
                     }
                     .search-btn.primary:hover {
                       transform: translateY(-4px);
-                      box-shadow: 0 12px 30px rgba(197, 164, 126, 0.3);
+                      box-shadow: 0 12px 30px rgba(197,164,126,0.3);
                     }
 
                     @keyframes fadeInUp {
@@ -857,7 +857,7 @@
                       left: 0;
                       width: 100%;
                       height: 100%;
-                      background: url("/img.jpg")
+                      background: url("/Emirates-Premium-Economy-India.webp")
                         center/cover no-repeat;
                       filter: brightness(1.0);
                       z-index: 0;
@@ -952,6 +952,175 @@
     position: absolute; top:0.5rem; right:0.5rem;
     background:none; border:none; font-size:1.2rem; cursor:pointer;
   }
+  .flights-container {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: flex-start;
+}
+
+.flight-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background: linear-gradient(120deg, #fff 70%, #f7f3ea 100%);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(10,15,44,0.13), 0 1.5px 8px rgba(197,164,126,0.07);
+  padding: 0;
+  min-width: 340px;
+  max-width: 720px;
+  margin-bottom: 2rem;
+  border: 1.5px solid #ececf3;
+  overflow: hidden;
+  transition: box-shadow 0.25s, transform 0.18s;
+}
+.flight-card:hover {
+  box-shadow: 0 16px 48px rgba(10,15,44,0.18), 0 4px 24px rgba(197,164,126,0.10);
+  transform: translateY(-4px) scale(1.015);
+}
+
+.flight-details-pane {
+  flex: 1 1 50%;
+  padding: 2.2rem 2rem 1.7rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #eee;
+  background: rgba(255,255,255,0.92);
+  min-width: 220px;
+}
+
+.flight-info {
+  margin-bottom: 1.2rem;
+  width: 100%;
+}
+.flight-info strong {
+  font-size: 1.3rem;
+  color: var(--primary, #0a0f2c);
+  letter-spacing: 0.01em;
+  font-family: var(--font-heading, 'Poppins', sans-serif);
+}
+.flight-info small {
+  color: #888;
+  font-size: 1.01rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.book-btn {
+  background: linear-gradient(90deg, var(--secondary, #c5a47e) 0%, #e8d9b5 100%);
+  color: var(--primary, #0a0f2c);
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.7rem;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.18s;
+  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
+}
+.book-btn:hover {
+  background: var(--primary, #0a0f2c);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
+}
+
+.booking-form-pane {
+  flex: 1 1 50%;
+  padding: 2.2rem 2rem 1.7rem 2rem;
+  background: linear-gradient(120deg, #f7f7fa 80%, #f3e9d7 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  animation: fadeInUp 0.4s;
+  min-width: 220px;
+  border-left: 1px solid #f1e7d6;
+  box-shadow: 0 2px 12px rgba(197,164,126,0.06);
+}
+
+.booking-form-pane form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.booking-form-pane label {
+  font-size: 1rem;
+  color: #222;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+}
+
+.booking-form-pane input[type="text"],
+.booking-form-pane input[type="number"],
+.booking-form-pane select {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.booking-form-pane input:focus,
+.booking-form-pane select:focus {
+  border-color: var(--secondary, #c5a47e);
+  box-shadow: 0 0 0 2px rgba(197,164,126,0.15);
+}
+
+.booking-form-pane button[type="submit"] {
+  background: linear-gradient(90deg, var(--secondary, #c5a47e) 0%, #e8d9b5 100%);
+  color: var(--primary, #0a0f2c);
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.booking-form-pane button[type="submit"]:hover {
+  background: var(--primary, #0a0f2c);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
+}
+
+@media (max-width: 900px) {
+  .flight-card {
+    flex-direction: column;
+    max-width: 98vw;
+  }
+  .flight-details-pane,
+  .booking-form-pane {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 1.2rem 1rem;
+    min-width: 0;
+  }
+  
+}
+#profileDetails p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+#profileActions .search-btn {
+  min-width: 100px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+}
     </style>
   </head>
   <body>
@@ -976,6 +1145,14 @@
         <button type="submit">Create Account</button>
       </form>
     </div>
+  </div>
+</div>
+    <div class="modal-backdrop" id="profileModal" style="display:none;">
+  <div class="modal-window" style="min-width:320px;max-width:95vw;">
+    <button class="modal-close" onclick="document.getElementById('profileModal').style.display='none'">&times;</button>
+    <h2>Your Profile</h2>
+    <div id="profileDetails"></div>
+    <div id="profileActions" style="margin-top:1.5rem;display:flex;gap:1rem;justify-content:flex-end;"></div>
   </div>
 </div>
     <nav id="navbar">
@@ -1015,44 +1192,27 @@
             <button class="tab-btn" data-target="status-form">
               <i class="fas fa-clock"></i> Flight status
             </button>
+            <button class="tab-btn" data-target="my-bookings-form">
+              <i class="fas fa-ticket-alt"></i> My Bookings
+            </button>
           </div>
           <div class="tab-content active" id="search-form">
-            <form class="form-grid">
+            <form id="flightSearchForm" class="form-grid">
               <div class="field">
-                <i class="fas fa-map-marker-alt"></i
-                ><input placeholder="Departure airport" />
+                <i class="fas fa-map-marker-alt"></i>
+                <input name="departure" placeholder="Departure airport" required/>
               </div>
               <div class="field">
-                <i class="fas fa-map-marker-alt"></i
-                ><input placeholder="Arrival airport" />
+                <i class="fas fa-map-marker-alt"></i>
+                <input name="arrival" placeholder="Arrival airport" required/>
               </div>
               <div class="field">
-                <i class="fas fa-calendar-alt"></i><input type="date" />
-              </div>
-              <div class="field">
-                <i class="fas fa-user"></i
-                ><input type="number" min="1" value="1" placeholder="Adults" />
-              </div>
-              <div class="field">
-                <i class="fas fa-child"></i
-                ><input
-                  type="number"
-                  min="0"
-                  value="0"
-                  placeholder="Children"
-                />
-              </div>
-              <div class="field">
-                <i class="fas fa-couch"></i>
-                <select>
-                  <option>First Class</option>
-                  <option>Business Class</option>
-                  <option>Premium Economy</option>
-                  <option>Economy Class</option>
-                </select>
+                <i class="fas fa-calendar-alt"></i>
+                <input name="date" type="date" required/>
               </div>
               <button class="search-btn" type="submit">Search Flights</button>
             </form>
+            <div id="searchResults" class="results"></div>
           </div>
           <div class="tab-content" id="manage-form">
             <form class="form-grid">
@@ -1111,6 +1271,9 @@
               <button class="search-btn" type="submit">Check status</button>
             </form>
           </div>
+          <div class="tab-content" id="my-bookings-form">
+            <div id="myBookingsResults"></div>
+          </div>
         </div>
       </section>
 
@@ -1148,7 +1311,7 @@
           <div class="banner-content">
             <div class="levels">
               <img
-                src="/mnt/data/60eefb2e-82b5-4576-a2ae-8e62aa8fcb01.png"
+                src="/Emirates-Premium-Economy-India.webp"
                 alt="Skywards Levels"
               />
             </div>
@@ -1321,6 +1484,8 @@
       <div class="copyright">© 2025 Voyage Vista. All rights reserved.</div>
     </main>
 
+    <button id="logoutBtn" style="display:none;">Logout</button>
+
     <script>
       // Mobile nav toggle
       document.querySelector(".menu-toggle").addEventListener("click", () => {
@@ -1461,11 +1626,14 @@
   });
   // Prevent interacting with page until closed
   window.addEventListener('load', ()=>{
+    if (!localStorage.getItem('userEmail')) {
     document.getElementById('authModal').style.display = 'flex';
+  } else {
+    document.getElementById('authModal').style.display = 'none';
+  }
   });
-</script>
-<script>
-      document.querySelector('#whatson-form form').addEventListener('submit', function(e) {
+
+document.querySelector('#whatson-form form').addEventListener('submit', function(e) {
   e.preventDefault();
   const fields = this.querySelectorAll('input');
   const data = {
@@ -1480,7 +1648,6 @@
   })
   .then(res => res.json())
   .then(services => {
-    // Display the inflight services info
     let html = '<h3>What\'s on your flight:</h3>';
     if (services.length === 0) {
       html += '<p>No inflight services found for this flight.</p>';
@@ -1492,10 +1659,13 @@
       });
     }
     document.querySelector('#whatson-form').innerHTML = html;
+  })
+  .catch(err => {
+    document.querySelector('#whatson-form').innerHTML = `<p>Error: ${err.message}</p>`;
   });
 });
-    </script>
-    <script>
+
+// Signup
 document.querySelector('#signup-form').addEventListener('submit', function(e) {
   e.preventDefault();
   const username = this.username.value;
@@ -1513,14 +1683,15 @@ document.querySelector('#signup-form').addEventListener('submit', function(e) {
       alert('Signup failed: ' + data.error);
     } else {
       alert('Signup successful!');
-      // Optionally, close modal or switch to login tab
+      localStorage.setItem('userEmail', email); // Save email
+      localStorage.setItem('username', username); 
       document.getElementById('authModal').style.display = 'none';
     }
   })
   .catch(() => alert('Signup failed: Server error'));
 });
-    </script>
-    <script>
+
+// Login
 document.querySelector('#loginTab button').addEventListener('click', function(e) {
   e.preventDefault();
   const email = document.querySelector('#loginTab input[type="email"]').value;
@@ -1537,12 +1708,264 @@ document.querySelector('#loginTab button').addEventListener('click', function(e)
       alert('Login failed: ' + data.error);
     } else {
       alert('Login successful!');
+      localStorage.setItem('userEmail', email); // Save email
       document.getElementById('authModal').style.display = 'none';
-      // Optionally, store user info or redirect
     }
   })
   .catch(() => alert('Login failed: Server error'));
 });
-    </script>
-  </body>
+
+document
+  .getElementById('flightSearchForm')
+  .addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Collect named fields
+    const form = e.target;
+    const departure = form.departure.value.trim();
+    const arrival   = form.arrival.value.trim();
+    const date      = form.date.value;
+
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '<p>Searching…</p>';
+
+    try {
+      const res = await fetch(
+  `http://localhost:3000/api/search-flights?departure=${encodeURIComponent(departure)}&arrival=${encodeURIComponent(arrival)}&date=${date}`
+);
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const data = await res.json(); // array of route objects
+
+      // Render
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid response format');
+      }
+      if (data.length === 0) {
+        resultsContainer.innerHTML = '<p>No flights found.</p>';
+      } else {
+        let html = '<div class="flights-container">';
+        data.forEach(f => {
+          html += `
+            <div class="flight-card">
+              <div class="flight-details-pane">
+                <div class="flight-info">
+                  <div>
+                    <strong>${f.flight_number}</strong> — ${f.departure} → ${f.arrival}
+                  </div>
+                  <div>
+                    <small>${new Date(f.date).toLocaleDateString()} • ${f.status}</small>
+                  </div>
+                </div>
+                <button class="book-btn" data-id="${f.id}">Book</button>
+              </div>
+              <div class="booking-form-pane" id="booking-form-${f.id}" style="display:none;">
+                <form>
+                  <label>
+                    Seat Number: <input type="text" name="seat" required placeholder="e.g. 12A">
+                  </label>
+                  <label>
+                    Adults: <input type="number" name="adults" min="1" value="1" required>
+                  </label>
+                  <label>
+                    Children: <input type="number" name="children" min="0" value="0" required>
+                  </label>
+                  <label>
+                    Class:
+                    <select name="class">
+                      <option>First Class</option>
+                      <option>Business Class</option>
+                      <option>Premium Economy</option>
+                      <option>Economy Class</option>
+                    </select>
+                  </label>
+                  <button type="submit">Confirm Booking</button>
+                </form>
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+        resultsContainer.innerHTML = html;
+
+        // Book button logic
+        document.querySelectorAll('.book-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            document.querySelectorAll('.booking-form-pane').forEach(form => form.style.display = 'none');
+            document.getElementById('booking-form-' + btn.dataset.id).style.display = 'flex';
+          });
+        });
+
+        // Booking form submission logic
+        document.querySelectorAll('.booking-form-pane form').forEach(form => {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const seat = this.seat.value;
+            const travelClass = this.class.value;
+            const adults = this.adults.value;
+            const children = this.children.value;
+            const flightId = this.closest('.booking-form-pane').id.replace('booking-form-', '');
+            const userEmail = localStorage.getItem('userEmail'); // Save this on login/signup
+
+            fetch('http://localhost:3000/api/book-flight', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                flight_id: flightId,
+                seat,
+                travelClass,
+                adults,
+                children,
+                user_email: userEmail
+              })
+            })
+            .then(res => res.json())
+            .then(data => {
+              alert(data.message || 'Booking successful!');
+              this.closest('.booking-form-pane').style.display = 'none';
+            })
+            .catch(() => alert('Booking failed!'));
+          });
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      resultsContainer.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+    }
+  });
+
+// When "My Bookings" tab is clicked
+document.querySelector('[data-target="my-bookings-form"]').addEventListener('click', function() {
+  const userEmail = localStorage.getItem('userEmail');
+  if (!userEmail) {
+    document.getElementById('myBookingsResults').innerHTML = '<p>Please log in to view your bookings.</p>';
+    return;
+  }
+  fetch(`http://localhost:3000/api/my-bookings?user_email=${encodeURIComponent(userEmail)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) {
+        document.getElementById('myBookingsResults').innerHTML = '<p>No bookings found.</p>';
+        return;
+      }
+      let html = '<h3>Your Bookings</h3><ul>';
+      data.forEach(b => {
+        html += `<li data-booking-id="${b.id}">
+          <strong>${b.flight_number}</strong> — ${b.departure} → ${b.arrival} (${b.date})
+          <br>Seat: ${b.seat}, Class: ${b.class}, Adults: ${b.adults}, Children: ${b.children}
+          <br>Status: ${b.status}, Booked at: ${new Date(b.booked_at).toLocaleString()}
+          <br><button class="cancel-booking-btn" data-id="${b.id}">Cancel Booking</button>
+        </li>`;
+      });
+      html += '</ul>';
+      document.getElementById('myBookingsResults').innerHTML = html;
+
+      // Add event listeners for cancel buttons
+      document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm('Are you sure you want to cancel this booking?')) {
+            fetch(`http://localhost:3000/api/cancel-booking/${btn.dataset.id}`, {
+              method: 'DELETE'
+            })
+            .then(res => res.json())
+            .then(data => {
+              alert(data.message || 'Booking cancelled.');
+              // Remove the booking from the UI
+              btn.closest('li').remove();
+            })
+            .catch(() => alert('Failed to cancel booking.'));
+          }
+        });
+      });
+    });
+});
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('userEmail');
+    location.reload();
+  });
+}
+
+// Show logout button if logged in
+if (localStorage.getItem('userEmail')) {
+  if (logoutBtn) logoutBtn.style.display = 'inline-block';
+}
+document.querySelector('.fa-user-circle').addEventListener('click', function(e) {
+  e.preventDefault();
+  const username = localStorage.getItem('username');
+  const email = localStorage.getItem('userEmail');
+  const profileDetails = document.getElementById('profileDetails');
+  const profileActions = document.getElementById('profileActions');
+  profileActions.innerHTML = '';
+
+  if (email) {
+    // User is logged in
+    profileDetails.innerHTML = `
+      <p><strong>Username:</strong> ${username || 'N/A'}</p>
+      <p><strong>Email:</strong> ${email}</p>
+    `;
+    // Logout button
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = 'Logout';
+    logoutBtn.className = 'search-btn primary';
+    logoutBtn.onclick = function() {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('username');
+      document.getElementById('profileModal').style.display = 'none';
+      location.reload();
+    };
+    profileActions.appendChild(logoutBtn);
+  } else {
+    // User is not logged in
+    profileDetails.innerHTML = `<p>You are not logged in.</p>`;
+    // Login and Signup buttons
+    const loginBtn = document.createElement('button');
+    loginBtn.textContent = 'Login';
+    loginBtn.className = 'search-btn primary';
+    loginBtn.onclick = function() {
+      document.getElementById('profileModal').style.display = 'none';
+      document.getElementById('authModal').style.display = 'flex';
+      // Switch to login tab
+      document.querySelector('.modal-window .tabs button[data-tab="loginTab"]').click();
+    };
+    const signupBtn = document.createElement('button');
+    signupBtn.textContent = 'Sign Up';
+    signupBtn.className = 'search-btn';
+    signupBtn.onclick = function() {
+      document.getElementById('profileModal').style.display = 'none';
+      document.getElementById('authModal').style.display = 'flex';
+      // Switch to signup tab
+      document.querySelector('.modal-window .tabs button[data-tab="signupTab"]').click();
+    };
+    profileActions.appendChild(loginBtn);
+    profileActions.appendChild(signupBtn);
+  }
+
+  document.getElementById('profileModal').style.display = 'flex';
+});
+</script>
+<style>
+.cancel-booking-btn {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(255,77,79,0.08);
+  outline: none;
+}
+.cancel-booking-btn:hover,
+.cancel-booking-btn:focus {
+  background: #d9363e;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,77,79,0.13);
+}
+</style>
+</body>
 </html>
