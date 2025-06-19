@@ -1,162 +1,458 @@
 const express = require('express');
-const mysql = require('mysql2');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const mysql = require('mysql2');
+
+// Create database connection
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Rakesh@123', // Your MySQL password
+    database: 'new'
+});
+
+// Connect to database
+db.connect(err => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to database successfully');
+});
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-// Connect to MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Dancerraj@12',
-  database: 'flights'
-});
-
-db.connect(err => {
-  if (err) throw err;
-  console.log('MySQL Connected!');
-});
+// Middleware
+app.use(cors({
+    origin: 'http://127.0.0.1:5500',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+app.use(express.json());
 
 // Signup endpoint
 app.post('/api/signup', (req, res) => {
-  const { username, email, password } = req.body;
-  bcrypt.hash(password, 10, (err, hash) => {
-    if (err) return res.status(500).json({ error: 'Server error' });
+    console.log('Received signup request:', req.body);
+    
+    const { username, email, password } = req.body;
+    
+    // Validate input
+    if (!username || !email || !password) {
+        return res.status(400).json({ 
+            error: 'Please provide all required fields' 
+        });
+    }
+
+    // Check if user exists
     db.query(
-      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-      [username, email, hash],
-      (err, result) => {
-        if (err) {
-          if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(400).json({ error: 'Username or email already exists' });
-          }
-          return res.status(500).json({ error: err.message });
+        'SELECT * FROM users WHERE email = ? OR username = ?',
+        [email, username],
+        (err, results) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ 
+                    error: 'Database error occurred' 
+                });
+            }
+
+            if (results.length > 0) {
+                return res.status(400).json({ 
+                    error: 'User already exists' 
+                });
+            }
+
+            // Insert new user
+            db.query(
+                'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+                [username, email, password],
+                (err, result) => {
+                    if (err) {
+                        console.error('Insert error:', err);
+                        return res.status(500).json({ 
+                            error: 'Error creating user' 
+                        });
+                    }
+                    
+                    res.status(201).json({ 
+                        message: 'User registered successfully',
+                        userId: result.insertId
+                    });
+                }
+            );
         }
-        res.json({ message: 'Signup successful' });
-      }
     );
-  });
 });
 
 // Login endpoint
 app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
-  db.query(
-    'SELECT * FROM users WHERE email = ?',
-    [email],
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (results.length === 0) {
-        return res.status(401).json({ error: 'Invalid email or password' });
-      }
-      bcrypt.compare(password, results[0].password, (err, match) => {
-        if (err || !match) {
-          return res.status(401).json({ error: 'Invalid email or password' });
+    console.log('Received login request:', req.body);
+    
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({ 
+            error: 'Please provide email and password' 
+        });
+    }
+
+    db.query(
+        'SELECT * FROM users WHERE email = ? AND password = ?',
+        [email, password],
+        (err, results) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ 
+                    error: 'Login failed' 
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(401).json({ 
+                    error: 'Invalid email or password' 
+                });
+            }
+
+            const user = results[0];
+            res.json({ 
+                message: 'Login successful',
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email
+                }
+            });
         }
-        res.json({ message: 'Login successful', user: results[0] });
-      });
-    }
-  );
+    );
 });
 
-// Manual search-flights endpoint (fetches from your own routes table)
-// After you set up your MySQL pool & express.json()…
-// Remove async/await and pool, just use db.query:
-app.get('/api/search-flights', (req, res) => {
-  const { departure, arrival, date } = req.query;
-  db.query(
-    'SELECT * FROM routes WHERE departure = ? AND arrival = ? AND date = ?',
-    [departure, arrival, date],
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(results);
-    }
-  );
-});
+// Add flight endpoint
+app.post('/api/admin/flights', (req, res) => {
+    const { flight_number, airline, departure, arrival, date, classes } = req.body;
 
-// Add a route to create a new flight route (for admin/demo)
-app.post('/api/add-route', (req, res) => {
-  const { departure, arrival, date, flight_number, status } = req.body;
-  db.query(
-    'INSERT INTO routes (departure, arrival, date, flight_number, status) VALUES (?, ?, ?, ?, ?)',
-    [departure, arrival, date, flight_number, status],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'Route added successfully' });
+    // Validate input
+    if (!flight_number || !airline || !departure || !arrival || !date || !classes) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
-  );
-});
 
-app.post('/api/book-flight', (req, res) => {
-  const { flight_id, seat, travelClass, adults, children, user_email } = req.body;
-  // Prevent double booking
-  db.query(
-    'SELECT * FROM bookings WHERE route_id = ? AND seat = ?',
-    [flight_id, seat],
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (results.length > 0) {
-        return res.status(400).json({ error: 'This seat is already booked.' });
-      }
-      db.query(
-        'INSERT INTO bookings (user_email, route_id, seat, class, adults, children) VALUES (?, ?, ?, ?, ?, ?)',
-        [user_email, flight_id, seat, travelClass, adults, children],
-        (err, result) => {
-          if (err) return res.status(500).json({ error: err.message });
-          res.json({ message: 'Booking successful!' });
+    db.beginTransaction(err => {
+        if (err) {
+            console.error('Transaction error:', err);
+            return res.status(500).json({ error: 'Database error' });
         }
-      );
-    }
-  );
+
+        // First insert the route
+        db.query(
+            'INSERT INTO routes (airline, flight_number, departure, arrival, date, status) VALUES (?, ?, ?, ?, ?, ?)',
+            [airline, flight_number, departure, arrival, date, 'Scheduled'],
+            (err, result) => {
+                if (err) {
+                    console.error('Route insert error:', err);
+                    return db.rollback(() => {
+                        res.status(500).json({ error: 'Error adding flight details' });
+                    });
+                }
+
+                const flight_id = result.insertId;
+                const classTypes = ['first', 'business', 'premium', 'economy'];
+                
+                // Insert each class
+                const classPromises = classTypes.map(type => {
+                    return new Promise((resolve, reject) => {
+                        const classData = classes[type];
+                        db.query(
+                            'INSERT INTO flight_classes (flight_id, class_type, total_seats, available_seats, adult_price, child_price) VALUES (?, ?, ?, ?, ?, ?)',
+                            [flight_id, type, classData.seats, classData.seats, classData.adult_price, classData.child_price],
+                            (err) => {
+                                if (err) reject(err);
+                                else resolve();
+                            }
+                        );
+                    });
+                });
+
+                // Execute all class insertions
+                Promise.all(classPromises)
+                    .then(() => {
+                        db.commit(err => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json({ error: 'Error committing transaction' });
+                                });
+                            }
+                            res.json({ 
+                                message: 'Flight added successfully',
+                                flight_id: flight_id 
+                            });
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Class insert error:', err);
+                        db.rollback(() => {
+                            res.status(500).json({ error: 'Error adding class details' });
+                        });
+                    });
+            }
+        );
+    });
 });
 
+// Get all flights for admin
+app.get('/api/admin/flights', (req, res) => {
+    db.query(`
+        SELECT r.*, GROUP_CONCAT(
+            CONCAT(fc.class_type, ':', fc.total_seats, ':', fc.available_seats, ':', fc.adult_price, ':', fc.child_price)
+        ) as class_details
+        FROM routes r
+        LEFT JOIN flight_classes fc ON r.id = fc.flight_id
+        GROUP BY r.id
+        ORDER BY r.date DESC`,
+        (err, results) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(results);
+        }
+    );
+});
+
+// Get all users for admin
+app.get('/api/admin/users', (req, res) => {
+    db.query('SELECT id, username, email, created_at FROM users', (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// Get all bookings for admin
+// Get bookings for a specific user with passenger details
+// Get bookings for a specific user by email
 app.get('/api/my-bookings', (req, res) => {
-  const { user_email } = req.query;
-  db.query(
-    `SELECT b.*, r.flight_number, r.departure, r.arrival, r.date, r.status
-     FROM bookings b
-     JOIN routes r ON b.route_id = r.id
-     WHERE b.user_email = ? ORDER BY b.booked_at DESC`,
-    [user_email],
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(rows);
-    }
-  );
-});
+  const user_email = req.query.user_email;
 
-app.delete('/api/cancel-booking/:id', (req, res) => {
-  const bookingId = req.params.id;
-  db.query('DELETE FROM bookings WHERE id = ?', [bookingId], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Booking cancelled.' });
+  if (!user_email) {
+    return res.status(400).json({ error: 'User email is required' });
+  }
+
+  const query = `
+    SELECT 
+      b.id AS booking_id,
+      b.booking_date,
+      r.flight_number,
+      r.departure,
+      r.arrival,
+      r.date,
+      b.class_type,
+      pd.title,
+      pd.first_name,
+      pd.last_name,
+      pd.email AS passenger_email,
+      pd.phone,
+      pd.country
+    FROM bookings b
+    JOIN routes r ON b.route_id = r.id
+    LEFT JOIN passenger_details pd ON b.id = pd.booking_id
+    WHERE b.user_email = ?
+    ORDER BY b.booking_date DESC
+  `;
+
+  db.query(query, [user_email], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Error retrieving bookings' });
+    }
+    res.json(results);
   });
 });
 
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+// DELETE /api/cancel-booking/:id
+app.delete('/api/cancel-booking/:id', (req, res) => {
+  const bookingId = parseInt(req.params.id, 10);
 
-// // Example: Attach this to your signup form's submit event
-// document.querySelector('#signup-form').addEventListener('submit', function(e) {
-//   e.preventDefault();
-//   const username = this.querySelector('input[name="username"]').value;
-//   const email = this.querySelector('input[name="email"]').value;
-//   const password = this.querySelector('input[name="password"]').value;
+  if (!bookingId || isNaN(bookingId)) {
+    return res.status(400).json({ message: 'Invalid booking ID' });
+  }
 
-//   fetch('http://localhost:3000/api/signup', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({ username, email, password })
-//   })
-//   .then(res => res.json())
-//   .then(data => {
-//     if (data.error) {
-//       alert('Signup failed: ' + data.error);
-//     } else {
-//       alert('Signup successful!');
-//     }
-//   });
-// });
+  console.log("Cancelling booking ID:", bookingId);
+
+  // First, fetch class_type and flight_id
+  db.query('SELECT route_id, class_type FROM bookings WHERE id = ?', [bookingId], (err, rows) => {
+    if (err || rows.length === 0) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    const { route_id, class_type } = rows[0];
+
+    db.beginTransaction(err => {
+      if (err) return res.status(500).json({ message: 'Transaction error' });
+
+      // Step 1: Delete passengers
+      db.query('DELETE FROM passenger_details WHERE booking_id = ?', [bookingId], (err1) => {
+        if (err1) return db.rollback(() => res.status(500).json({ message: 'Error deleting passengers' }));
+
+        // Step 2: Delete booking
+        db.query('DELETE FROM bookings WHERE id = ?', [bookingId], (err2, result2) => {
+          if (err2) return db.rollback(() => res.status(500).json({ message: 'Error deleting booking' }));
+
+          if (result2.affectedRows === 0) {
+            return db.rollback(() => res.status(404).json({ message: 'Booking not found' }));
+          }
+
+          // Step 3: Restore seat
+          db.query(
+            'UPDATE flight_classes SET available_seats = available_seats + 1 WHERE flight_id = ? AND class_type = ?',
+            [route_id, class_type],
+            (err3) => {
+              if (err3) return db.rollback(() => res.status(500).json({ message: 'Error restoring seat' }));
+
+              db.commit(err4 => {
+                if (err4) return db.rollback(() => res.status(500).json({ message: 'Commit failed' }));
+                res.json({ message: 'Booking cancelled successfully' });
+              });
+            }
+          );
+        });
+      });
+    });
+  });
+});
+
+
+
+
+
+// Bookings endpoint
+app.post('/api/bookings', (req, res) => {
+    const { flight_id, class_type, first_name, last_name, email, phone, country } = req.body;
+
+    db.beginTransaction(err => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.query(
+            'INSERT INTO bookings (user_email, route_id,class_type) VALUES (?, ?, ?)',
+            [email, flight_id,class_type],
+            (err, bookingResult) => {
+                if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+
+                const booking_id = bookingResult.insertId;
+
+                db.query(
+                    'INSERT INTO passenger_details (booking_id, title, first_name, last_name, email, phone, country) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [booking_id, 'Mr', first_name, last_name, email, phone, country],
+                    (err) => {
+                        if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+
+                        db.query(
+                            'UPDATE flight_classes SET available_seats = available_seats - 1 WHERE flight_id = ? AND class_type = ?',
+                            [flight_id, class_type],
+                            (err) => {
+                                if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+
+                                db.commit(err => {
+                                    if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+                                    res.json({ message: 'Booking successful', booking_id });
+                                });
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    });
+});
+
+
+// Add this endpoint for searching flights
+app.get('/api/search-flights', (req, res) => {
+    const { departure, arrival, date } = req.query;
+    
+    console.log('Search params:', { departure, arrival, date }); // Debug log
+
+    const query = `
+        SELECT r.*, 
+            GROUP_CONCAT(
+                CONCAT(
+                    fc.class_type, ':', 
+                    fc.available_seats, ':',
+                    fc.adult_price, ':',
+                    fc.child_price
+                )
+            ) as class_details
+        FROM routes r
+        LEFT JOIN flight_classes fc ON r.id = fc.flight_id
+        WHERE r.departure = ? 
+        AND r.arrival = ? 
+        AND DATE(r.date) = DATE(?)
+        GROUP BY r.id`;
+
+    db.query(query, [departure, arrival, date], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        // Format the results
+        const flights = results.map(flight => {
+            const classes = {};
+            if (flight.class_details) {
+                flight.class_details.split(',').forEach(classInfo => {
+                    const [type, seats, adultPrice, childPrice] = classInfo.split(':');
+                    classes[type] = {
+                        available_seats: parseInt(seats),
+                        adult_price: parseFloat(adultPrice),
+                        child_price: parseFloat(childPrice)
+                    };
+                });
+            }
+
+            return {
+                id: flight.id,
+                flight_number: flight.flight_number,
+                airline: flight.airline,
+                departure: flight.departure,
+                arrival: flight.arrival,
+                date: flight.date,
+                status: flight.status,
+                classes: classes
+            };
+        });
+
+        res.json(flights);
+    });
+});
+// Admin route: Get all bookings without booking_details
+app.get('/api/admin/booking', (req, res) => {
+  const query = `
+    SELECT 
+      b.id AS booking_id,
+      b.user_email,
+      b.booking_date,
+      r.flight_number,
+      r.airline,
+      r.departure,
+      r.arrival,
+      r.date AS flight_date,
+      r.status,
+      p.title,
+      p.first_name,
+      p.last_name,
+      p.email AS passenger_email,
+      p.phone,
+      p.country
+    FROM bookings b
+    JOIN routes r ON b.route_id = r.id
+    LEFT JOIN passenger_details p ON p.booking_id = b.id
+    ORDER BY b.booking_date DESC
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('🔥 SQL ERROR in /api/admin/booking:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

@@ -1,0 +1,299 @@
+:root {
+  --primary: #0a0f2c;
+  --secondary: #c5a47e;
+  --accent: #1890ff;
+  --danger: #ff4d4f;
+  --bg: #f6f6f9;
+  --glass: rgba(255,255,255,0.85);
+  --shadow: 0 8px 32px rgba(10,15,44,0.10);
+  --radius: 18px;
+  --transition: 0.18s cubic-bezier(.4,0,.2,1);
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, var(--bg) 60%, #e9e4d7 100%);
+  margin: 0;
+  padding: 0;
+  color: var(--primary);
+  min-height: 100vh;
+}
+
+.flights-container {
+  margin: 3rem auto 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  max-width: 1200px;
+}
+
+.flight-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background: var(--glass);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow), 0 1.5px 8px rgba(197,164,126,0.07);
+  min-width: 340px;
+  max-width: 700px;
+  width: 100%;
+  margin-bottom: 2rem;
+  border: 1.5px solid #ececf3;
+  overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition);
+  backdrop-filter: blur(6px);
+}
+.flight-card:hover {
+  box-shadow: 0 16px 48px rgba(10,15,44,0.18), 0 4px 24px rgba(197,164,126,0.10);
+  transform: translateY(-4px) scale(1.015);
+}
+
+.flight-details-pane {
+  flex: 1 1 50%;
+  padding: 2.2rem 2rem 1.7rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #eee;
+  background: rgba(255,255,255,0.92);
+  min-width: 220px;
+}
+
+.flight-info {
+  margin-bottom: 1.2rem;
+  width: 100%;
+}
+.flight-info strong {
+  font-size: 1.35rem;
+  color: var(--primary);
+  letter-spacing: 0.01em;
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+.flight-info small {
+  color: #888;
+  font-size: 1.01rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.book-btn {
+  background: linear-gradient(90deg, var(--secondary) 0%, #e8d9b5 100%);
+  color: var(--primary);
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.7rem;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  margin-bottom: 0.2rem;
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition), transform var(--transition);
+  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
+  letter-spacing: 0.01em;
+}
+.book-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.booking-form-pane {
+  flex: 1 1 50%;
+  padding: 2.2rem 2rem 1.7rem 2rem;
+  background: linear-gradient(120deg, #f7f7fa 80%, #f3e9d7 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  animation: fadeInUp 0.4s;
+  min-width: 220px;
+  border-left: 1px solid #f1e7d6;
+  box-shadow: 0 2px 12px rgba(197,164,126,0.06);
+  backdrop-filter: blur(4px);
+}
+
+.booking-form-pane form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.booking-form-pane label {
+  font-size: 1rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.booking-form-pane input[type="text"],
+.booking-form-pane input[type="number"],
+.booking-form-pane select {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.booking-form-pane input:focus,
+.booking-form-pane select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 2px rgba(197,164,126,0.15);
+}
+
+.booking-form-pane button[type="submit"] {
+  background: linear-gradient(90deg, var(--secondary) 0%, #e8d9b5 100%);
+  color: var(--primary);
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.08rem;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+  align-self: flex-end;
+  letter-spacing: 0.01em;
+}
+.booking-form-pane button[type="submit"]:hover {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
+}
+
+.cancel-booking-btn {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.7rem;
+  cursor: pointer;
+  transition: background var(--transition), box-shadow var(--transition), color var(--transition);
+  box-shadow: 0 2px 8px rgba(255,77,79,0.08);
+  outline: none;
+}
+.cancel-booking-btn:hover,
+.cancel-booking-btn:focus {
+  background: #d9363e;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,77,79,0.13);
+}
+
+.tab-btn {
+  background: #f7f7fa;
+  color: var(--primary);
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 0.8rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: background var(--transition), color var(--transition);
+  letter-spacing: 0.01em;
+}
+.tab-btn.active, .tab-btn:hover {
+  background: var(--secondary);
+  color: #fff;
+}
+
+.tab-content {
+  background: var(--glass);
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(10,15,44,0.06);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(2px);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,15,44,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s;
+}
+.modal-window {
+  background: var(--glass);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(10,15,44,0.13);
+  padding: 2rem 2.5rem;
+  position: relative;
+  min-width: 320px;
+  max-width: 95vw;
+  backdrop-filter: blur(8px);
+}
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.modal-close:hover {
+  color: var(--secondary);
+}
+
+#profileDetails p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+#profileActions .search-btn {
+  min-width: 100px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
+
+@media (max-width: 900px) {
+  .flights-container {
+    gap: 1.2rem;
+  }
+  .flight-card {
+    flex-direction: column;
+    max-width: 98vw;
+  }
+  .flight-details-pane,
+  .booking-form-pane {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 1.2rem 1rem;
+    min-width: 0;
+  }
+  .tab-content {
+    padding: 1rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeIn {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}

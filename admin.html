@@ -1,1233 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voyage Vista – Admin Panel</title>
-   <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    /> 
-  <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyage Vista – Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-                    :root {
-                      --primary: #0a0f2c;
-                      --secondary: #c5a47e;
-                      --accent: #ffffff;
-                      --font-sans: "Inter", sans-serif;
-                      --font-heading: "Poppins", sans-serif;
-                      --font-serif: "Playfair Display", serif;
-                      --transition-time: 0.4s;
-                      --gradient-primary: linear-gradient(135deg, #0a0f2c 0%, #1a1f3c 100%);
-                    }
-                    *,
-                    *::before,
-                    *::after {
-                      box-sizing: border-box;
-                      margin: 0;
-                      padding: 0;
-                    }
-                    html {
-                      scroll-behavior: smooth;
-                      height: 100%;
-                      overflow-x: hidden;
-                    }
-                    body {
-                      font-family: var(--font-sans);
-                      color: var(--primary);
-                      background: #fff;
-                      height: 100%;
-                      overflow-y: auto;
-                      -webkit-overflow-scrolling: touch;
-                    }
+        :root {
+          --primary: #0a0f2c;
+          --secondary: #c5a47e;
+          --accent: #ffffff;
+          --font-sans: 'Inter', sans-serif;
+          --font-heading: 'Poppins', sans-serif;
+          --font-serif: 'Playfair Display', serif;
+        }
 
-                    /* Navigation */
-                    nav {
-                      position: fixed;
-                      top: 0;
-                      width: 100%;
-                      padding: 1rem 5%;
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: center;
-                      background: var(--gradient-primary);
-                      backdrop-filter: blur(12px);
-                      z-index: 1000;
-                      transition: background var(--transition-time),
-                        padding var(--transition-time);
-                    }
-                    nav.scrolled {
-                      background: var(--primary);
-                      padding: 0.5rem 5%;
-                    }
-                    .logo {
-        margin-right: 2rem;
-        font-family: var(--font-serif);
-        font-size: 2rem;
-        letter-spacing: -0.02em;
-        background: linear-gradient(45deg, #c5a47e, #e8d9b5);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-                    .nav-links {
-        display: flex;
-        gap: 2rem;
-        justify-content: center;
-        flex: 1;
-                    }
-                    .nav-icons {
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
-        margin-left: 2rem;
-      }
-      .nav-icons a {
-        color: var(--accent);
-        font-size: 1.3rem;
-        transition: color var(--transition-time);
-      }
-      .nav-icons a:hover {
-        color: var(--secondary);
-      }
-                    .nav-links a {
-                      color: var(--accent);
-                      text-decoration: none;
-                      font-family: var(--font-heading);
-                      font-weight: 500;
-                      letter-spacing: 0.05em;
-                      position: relative;
-                      transition: color var(--transition-time);
-                    }
-                    .nav-links a::after {
-                      content: "";
-                      position: absolute;
-                      bottom: -2px;
-                      left: 0;
-                      height: 2px;
-                      width: 0;
-                      background: var(--secondary);
-                      transition: width var(--transition-time);
-                    }
-                    .nav-links a:hover {
-                      color: var(--secondary);
-                    }
-                    .nav-links a:hover::after {
-                      width: 100%;
-                    }
-                    .menu-toggle {
-                      display: none;
-                      font-size: 1.5rem;
-                      color: var(--accent);
-                      cursor: pointer;
-                    }
-                    @media (max-width: 1024px) {
-                      .nav-links {
-                        display: none;
-                        flex-direction: column;
-                        background: var(--primary);
-                        position: absolute;
-                        top: 100%;
-                        left: 0;
-                        width: 100%;
-                        padding: 1rem;
-                      }
-                      .menu-toggle {
-                        display: block;
-                      }
-                    }
+        /* Core styles */
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: var(--font-sans);
+          background: #f6f6f9;
+        }
 
-                    /* Layout & Panels */
-                    main {
-                      scroll-snap-type: y mandatory;
-                      padding-top: 90px;
-                    }
-                    section {
-                      scroll-snap-align: start;
-                      width: 100%;
+        /* Admin Layout */
+        .admin-layout {
+          display: grid;
+          grid-template-columns: 250px 1fr;
+          min-height: 100vh;
+        }
 
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      position: relative;
-                      overflow: hidden;
-                      background: #fff;
-                      padding: 6rem 5% 4rem;
-                    }
-                    .panel {
-                      position: relative;
-                      z-index: 1;
-                      background: #fff;
-                      padding: 2rem;
-                      border-radius: 16px;
-                      max-width: 900px;
-                      width: 90%;
-                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
-                    }
+        /* Sidebar */
+        .sidebar {
+          background: var(--primary);
+          color: var(--accent);
+          padding: 2rem;
+        }
 
-                    /* Animations */
-                    @keyframes fadeIn {
-                      from {
-                        opacity: 0;
-                      }
-                      to {
-                        opacity: 1;
-                      }
-                    }
-                    @keyframes fadeInUp {
-                      from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                      }
-                      to {
-                        opacity: 1;
-                        transform: translateY(0);
-                      }
-                    }
-                    @keyframes fadeInDown {
-                      from {
-                        opacity: 0;
-                        transform: translateY(-20px);
-                      }
-                      to {
-                        opacity: 1;
-                        transform: translateY(0);
-                      }
-                    }
+        .logo {
+          font-family: var(--font-serif);
+          font-size: 1.5rem;
+          color: var(--secondary);
+          margin-bottom: 2rem;
+        }
 
-                    /* Hero & Form */
-                    .hero .panel {
-                      animation: fadeInUp 0.8s ease-out both;
-                    }
-                    .tabs {
-                      display: flex;
-                      gap: 1rem;
-                      margin-bottom: 2rem;
-                    }
-                    .tabs button {
-                      flex: 1;
-                      padding: 1rem;
-                      font-family: var(--font-heading);
-                      font-weight: 600;
-                      background: transparent;
-                      border: none;
-                      cursor: pointer;
-                      position: relative;
-                      transition: color var(--transition-time);
-                    }
-                    .tabs button::after {
-                      content: "";
-                      position: absolute;
-                      bottom: -4px;
-                      left: 50%;
-                      width: 0;
-                      height: 3px;
-                      background: var(--secondary);
-                      transition: width var(--transition-time), left var(--transition-time);
-                    }
-                    .tabs button.active {
-                      color: var(--primary);
-                    }
-                    .tabs button.active::after {
-                      width: 50%;
-                      left: 25%;
-                    }
+        .nav-links {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
 
-                    .form-grid {
-                      display: grid;
-                      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                      gap: 1.5rem;
-                    }
-                    .field {
-                      position: relative;
-                      background: #fff;
-                      border-radius: 12px;
-                      padding: 0.8rem 1rem 0.8rem 3.5rem;
-                      border: 1px solid #ddd;
-                      transition: transform var(--transition-time),
-                        box-shadow var(--transition-time);
-                    }
-                    .field:hover {
-                      transform: translateY(-4px);
-                      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-                    }
-                    .field i {
-                      position: absolute;
-                      top: 50%;
-                      left: 1rem;
-                      transform: translateY(-50%);
-                      font-size: 1.2rem;
-                      color: var(--primary);
-                    }
-                    .field input,
-                    .field select {
-                      width: 100%;
-                      border: none;
-                      background: transparent;
-                      font-family: var(--font-sans);
-                      font-size: 1rem;
-                      color: var(--primary);
-                      padding: 0.8rem 0;
-                    }
-                    .search-btn {
-                      grid-column: 1/-1;
-                      padding: 1.2rem;
-                      font-family: var(--font-heading);
-                      font-size: 1.1rem;
-                      font-weight: 700;
-                      background: var(--secondary);
-                      color: var(--primary);
-                      border: none;
-                      border-radius: 12px;
-                      cursor: pointer;
-                      transition: transform var(--transition-time),
-                        box-shadow var(--transition-time);
-                    }
-                    .search-btn:hover {
-                      transform: translateY(-4px);
-                      box-shadow: 0 12px 30px rgba(197, 164, 126, 0.3);
-                    }
+        .nav-links a {
+          color: var(--accent);
+          text-decoration: none;
+          padding: 0.8rem 1rem;
+          border-radius: 8px;
+          transition: background 0.3s;
+        }
 
-                    /* Services */
-                    .services-grid {
-                      display: flex;
-                      flex-wrap: wrap;
-                      justify-content: space-between;
-                      gap: 1rem;
-                    }
-                    .service {
-                      flex: 1 1 calc(14% - 1rem);
-                      text-decoration: none;
-                      color: var(--primary);
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      padding: 1rem;
-                      border: 1px solid #ddd;
-                      border-radius: 8px;
-                      background: #fff;
-                      transition: transform var(--transition-time),
-                        box-shadow var(--transition-time);
-                    }
-                    .service i {
-                      font-size: 1.5rem;
-                      margin-bottom: 0.5rem;
-                      color: var(--secondary);
-                    }
-                    .service span {
-                      font-size: 0.9rem;
-                      text-align: center;
-                    }
-                    .service:hover {
-                      transform: translateY(-4px);
-                      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                    }
+        .nav-links a:hover {
+          background: rgba(255,255,255,0.1);
+        }
 
-                    /* Skywards Banner */
-                    .banner-panel {
-                      display: flex;
-                      align-items: center;
-                      gap: 2rem;
-                      padding: 1rem;
-                      background: #000;
-                      color: #fff;
-                      border-radius: 8px;
-                      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-                    }
-                    .banner-content {
-                      display: flex;
-                      align-items: center;
-                      gap: 1.5rem;
-                      width: 100%;
-                    }
-                    .banner-content .levels img {
-                      height: 50px;
-                    }
-                    .banner-content .text h3 {
-                      margin: 0;
-                      font-family: var(--font-heading);
-                      font-size: 1.2rem;
-                    }
-                    .banner-content .text p {
-                      margin: 0;
-                      font-size: 0.9rem;
-                    }
-                    .banner-content .em-btn {
-                      margin-left: auto;
-                      padding: 0.8rem 1.5rem;
-                      background: var(--secondary);
-                      color: var(--primary);
-                      border: none;
-                      border-radius: 4px;
-                      cursor: pointer;
-                      transition: opacity var(--transition-time);
-                    }
-                    .banner-content .em-btn:hover {
-                      opacity: 0.9;
-                    }
+        .nav-links a.active {
+          background: var(--secondary);
+          color: var(--primary);
+        }
 
-                    /* Destinations */
-                    .destinations {
-                      flex-direction: column;
-                      padding: 4rem 5%;
-                    }
-                    .destinations h2 {
-                      font-family: var(--font-heading);
-                      font-size: 2.2rem;
-                      margin-bottom: 2rem;
-                      text-align: center;
-                      animation: fadeIn 0.8s ease-out both;
-                    }
-                    .destinations-grid {
-                      display: grid;
-                      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                      gap: 2rem;
-                    }
-                    .dest-card {
-                      background: #fff;
-                      border-radius: 12px;
-                      overflow: hidden;
-                      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-                      transition: transform var(--transition-time);
-                    }
-                    .dest-card:hover {
-                      transform: translateY(-6px);
-                    }
-                    .dest-card img {
-                      width: 100%;
-                      height: 200px;
-                      object-fit: cover;
-                    }
-                    .dest-card-info {
-                      padding: 1.5rem;
-                      text-align: center;
-                    }
-                    .dest-card-info h3 {
-                      margin-bottom: 0.5rem;
-                      font-family: var(--font-serif);
-                    }
-                    .dest-card-info span {
-                      color: var(--secondary);
-                      font-weight: 600;
-                    }
+        /* Main Content */
+        .main-content {
+          padding: 2rem;
+        }
 
-                    /* Benefits */
-                    .benefits {
-                      flex-direction: column;
-                      padding: 4rem 5%;
-                    }
-                    .benefits .panel {
-                      max-width: 800px;
-                      text-align: center;
-                      animation: fadeInDown 0.8s ease-out both;
-                    }
+        /* Admin Panel Styles */
+        .panel {
+          background: white;
+          border-radius: 12px;
+          padding: 2rem;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
 
-                    /* Classes */
-                    .classes {
-                      background: #fafafa;
-                      padding: 6rem 5%;
-                    }
-                    .classes h2 {
-                      font-family: var(--font-serif);
-                      font-size: 2.5rem;
-                      margin-bottom: 4rem;
-                      position: relative;
-                      display: inline-block;
-                    }
-                    .classes h2::after {
-                      content: "";
-                      position: absolute;
-                      bottom: -15px;
-                      left: 50%;
-                      transform: translateX(-50%);
-                      width: 60px;
-                      height: 3px;
-                      background: var(--secondary);
-                    }
-                    .class-grid {
-                      display: grid;
-                      grid-template-columns: repeat(4, 1fr);
-                      gap: 3rem;
-                      max-width: 1400px;
-                      margin: 0 auto;
-                    }
-                    .class-card {
-                      background: var(--accent);
-                      border-radius: 16px;
-                      overflow: hidden;
-                      box-shadow: 0 12px 40px rgba(10, 15, 44, 0.08);
-                      transition: all var(--transition-time)
-                        cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                      position: relative;
-                      animation: cardEntrance 0.6s ease-out both;
-                    }
-                    .class-card::before {
-                      content: "";
-                      position: absolute;
-                      top: 0;
-                      left: 0;
-                      right: 0;
-                      bottom: 0;
-                      background: linear-gradient(
-                        45deg,
-                        rgba(197, 164, 126, 0.1) 0%,
-                        rgba(255, 255, 255, 0) 100%
-                      );
-                      z-index: 1;
-                    }
-                    .class-card:hover {
-                      transform: translateY(-10px) scale(1.02);
-                      box-shadow: 0 24px 60px rgba(10, 15, 44, 0.15);
-                    }
-                    .class-card img {
-                      height: 240px;
-                      object-position: center;
-                      transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
-                    }
-                    .class-card:hover img {
-                      transform: scale(1.05);
-                    }
-                    .class-card-info {
-                      padding: 2rem;
-                      position: relative;
-                      z-index: 2;
-                      background: var(--accent);
-                    }
-                    .class-card-info h3 {
-                      font-family: var(--font-serif);
-                      font-size: 1.5rem;
-                      margin-bottom: 1rem;
-                      color: var(--primary);
-                      position: relative;
-                      padding-bottom: 0.5rem;
-                    }
-                    .class-card-info h3::after {
-                      content: "";
-                      position: absolute;
-                      bottom: 0;
-                      left: 0;
-                      width: 40px;
-                      height: 2px;
-                      background: var(--secondary);
-                    }
-                    .class-card-info p {
-                      color: #666;
-                      font-size: 1rem;
-                      line-height: 1.6;
-                      margin-bottom: 1.5rem;
-                    }
-                    .class-card-info::before {
-                      content: "";
-                      position: absolute;
-                      top: -20px;
-                      left: 0;
-                      right: 0;
-                      height: 20px;
-                      background: linear-gradient(
-                        to bottom,
-                        rgba(255, 255, 255, 0),
-                        var(--accent)
-                      );
-                    }
-                    @keyframes cardEntrance {
-                      from {
-                        opacity: 0;
-                        transform: translateY(20px) scale(0.95);
-                      }
-                      to {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                      }
-                    }
-                    @media (max-width: 1200px) {
-                      .class-grid {
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 2rem;
-                      }
-                    }
-                    @media (max-width: 768px) {
-                      .class-grid {
-                        grid-template-columns: 1fr;
-                      }
-                      .classes h2 {
-                        font-size: 2rem;
-                      }
-                    }
-                    * {
-                      box-sizing: border-box;
-                      margin: 0;
-                      padding: 0;
-                    }
-                    body {
-                      font-family: "Inter", sans-serif;
-                      background: #fff;
-                      color: var(--primary);
-                    }
-                    nav {
-                      /* your nav styles… */
-                    }
+        /* Flight Management Table */
+        .flights-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
 
-                    /* Hero panel + tabs */
-                    .hero {
-                      padding: 6rem 5%;
-                      background: #fafafa;
-                    } */
-                    .panel {
-                      max-width: 900px;
-                      margin: 0 auto;
-                      background: #fff;
-                      border-radius: 16px;
-                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
-                      overflow: hidden;
-                    }
-                    .tabs {
-                      display: flex;
-                      background: #fff;
-                      border-bottom: 1px solid #ddd;
-                      border-top-left-radius: 32px;   /* Add this */
-                      border-top-right-radius: 32px;  /* Add this */
-                      overflow: hidden;
-                    }
-                    .tabs button {
-                      flex: 1;
-                      padding: 1rem 0;
-                      font-family: "Poppins", sans-serif;
-                      font-weight: 600;
-                      background: none;
-                      border: none;
-                      cursor: pointer;
-                      position: relative;
-                      transition: color var(--transition);
-                    }
-                    .tabs button.active {
-                      color: var(--primary);
-                    }
-                    .tabs button.active::after {
-                      content: "";
-                      position: absolute;
-                      bottom: 0;
-                      left: 10%;
-                      width: 80%;
-                      height: 4px;
-                      background: var(--secondary);
-                      border-radius: 2px 2px 0 0;
-                    }
-                    .tabs button:not(.active):hover {
-                      color: var(--secondary);
-                    }
+        .flights-table th,
+        .flights-table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
 
-                    /* tab contents */
-                    .tab-content {
-                      display: none;
-                      padding: 2rem;
-                      animation: fadeInUp 0.6s both;
-                    }
-                    .tab-content.active {
-                      display: block;
-                    }
+        .flights-table th {
+          background: #f8f9fa;
+          font-weight: 600;
+        }
+        .users-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
 
-                    /* form grid & fields (re-use yours) */
-                    .form-grid {
-                      display: grid;
-                      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                      gap: 1.5rem;
-                    }
-                    .field {
-                      position: relative;
-                      padding: 0.8rem 1rem 0.8rem 3.5rem;
-                      border: 1px solid #ddd;
-                      border-radius: 12px;
-                      transition: transform var(--transition), box-shadow var(--transition);
-                    }
-                    .field:hover {
-                      transform: translateY(-4px);
-                      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-                    }
-                    .field i {
-                      position: absolute;
-                      top: 50%;
-                      left: 1rem;
-                      transform: translateY(-50%);
-                      color: var(--primary);
-                      font-size: 1.2rem;
-                    }
-                    .field input,
-                    .field select {
-                      width: 100%;
-                      border: none;
-                      background: transparent;
-                      font-size: 1rem;
-                      padding: 0.8rem 0;
-                    }
-                    .search-btn {
-                      grid-column: 1 / -1;
-                      padding: 1.2rem;
-                      font-family: "Poppins", sans-serif;
-                      font-weight: 700;
-                      border: none;
-                      border-radius: 12px;
-                      cursor: pointer;
-                      transition: transform var(--transition), box-shadow var(--transition);
-                    }
-                    .search-btn.primary {
-                      background: var(--secondary);
-                      color: var(--primary);
-                    }
-                    .search-btn.primary:hover {
-                      transform: translateY(-4px);
-                      box-shadow: 0 12px 30px rgba(197,164,126,0.3);
-                    }
+        .users-table th,
+        .users-table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
 
-                    @keyframes fadeInUp {
-                      from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                      }
-                      to {
-                        opacity: 1;
-                        transform: translateY(0);
-                      }
-                    }
+        .users-table th {
+          background: #f8f9fa;
+          font-weight: 600;
+        }
+        .bookings-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
 
-                    /* Modal styles */
-  .modal-backdrop {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(10,15,44,0.45);
-    z-index: 20000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s;
-  }
-  .modal-window {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-    padding: 2.5rem 2rem 2rem 2rem;
-    min-width: 320px;
-    max-width: 95vw;
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeInUp 0.5s;
-  }
-  .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: #888;
-    cursor: pointer;
-    z-index: 1;
-    transition: color 0.2s;
-  }
-  .modal-close:hover {
-    color: var(--primary);
-  }
-  .modal-window h2 {
-    font-family: var(--font-serif);
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    color: var(--primary);
-  }
-  .modal-window .tabs {
-    display: flex;
-    width: 100%;
-    margin-bottom: 1.5rem;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f5f5f5;
-  }
-  .modal-window .tabs button {
-    flex: 1;
-    padding: 0.8rem 0;
-    border: none;
-    background: none;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 1rem;
-    color: #888;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  .modal-window .tabs button.active {
-    background: var(--secondary);
-    color: var(--primary);
-  }
-  .modal-content {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    animation: fadeInUp 0.4s;
-  }
-  .modal-content.active {
-    display: flex;
-  }
-  .modal-content input {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    font-family: var(--font-sans);
-  }
-  .modal-content button {
-    padding: 1rem;
-    background: var(--primary);
-    color: #ff0f0f;
-    border: none;
-    border-radius: 8px;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.2s;
-  }
-  .modal-content button:hover {
-    background: var(--secondary);
-    color: var(--primary);
-  }
-                    /* Footer */
-                    .options {
-                      flex-direction: column;
-                      padding: 3rem 5%;
-                      color: var(--primary);
-                    }
-                    .options .footer-grid {
-                      display: grid;
-                      gap: 1.5rem;
-                    }
-                    @media (min-width: 768px) {
-                      .options .footer-grid {
-                        grid-template-columns: repeat(4, 1fr);
-                      }
-                    }
-                    .options h4 {
-                      font-family: var(--font-serif);
-                      margin-bottom: 0.5rem;
-                    }
-                    .options a {
-                      color: var(--primary);
-                      text-decoration: none;
-                      margin-bottom: 0.5rem;
-                      transition: color var(--transition-time);
-                    }
-                    .options a:hover {
-                      color: var(--secondary);
-                    }
-                    .copyright {
-                      padding: 1rem 5%;
-                      text-align: center;
-                      color: var(--primary);
-                      font-size: 0.9rem;
-                    }
-                    /* Hero background and overlay */
-                    .hero {
-                      padding-top: 0;
-                       position: relative;
-            width: 100%;
-            min-height: 480px; /* or 60vh, or any value that fits your design */
-            padding: 1rem 5% 4rem;
-            background: #fafafa;
+        .bookings-table th,
+        .bookings-table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #eee;
+        }
+
+        .bookings-table th {
+          background: #f8f9fa;
+          font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.3s;
+        }
+
+        .add-btn {
+          background: var(--secondary);
+          color: var(--primary);
+        }
+
+        .edit-btn {
+          background: #1890ff;
+          color: white;
+        }
+
+        .delete-btn {
+          background: #ff4d4f;
+          color: white;
+        }
+
+        /* Forms */
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .form-group label {
+          font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+          padding: 0.8rem;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          display: none;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-                    }
-                    .hero-bg {
-                      position: absolute;
-                      top: 0;
-                      left: 0;
-                      width: 100%;
-                      height: 100%;
-                      background: url("/Emirates-Premium-Economy-India.webp")
-                        center/cover no-repeat;
-                      filter: brightness(1.0);
-                      z-index: 0;
-                      transition: none;
-                    }
-                    @media (max-width: 900px) {
-                      .hero-bg {
-                        height: 40vh;
-                        background-position: center 40%;
-                      }
-                    }
-                    .hero .panel {
-                      /* Remove absolute positioning and negative bottom */
-                      /* position: absolute;
-                bottom: -90px;
-                left: 15%;
-                transform: translateX(-50%);
-                width: 75%; */
-                      position: relative;
-                      margin: 0 ;
-                      width: 90%;
-                      max-width: 1200px;
-                      background:  rgba(255,255,255,0.65);
-                       backdrop-filter: blur(1px);
-                      border-radius: 16px;
-                      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
-                      overflow: hidden;
-                      padding-top: 2rem;
-                      z-index: 1;
-                    }
-                    .hero .panel > *:first-child {
-                      margin-top: 0 !important;
-                    }
-                    /* Feedback Button */
-                    .feedback-btn {
-                      position: fixed;
-                      right: 1rem;
-                      bottom: 2rem;
-                      background: var(--secondary);
-                      color: var(--primary);
-                      border: none;
-                      border-radius: 50%;
-                      width: 60px;
-                      height: 60px;
-                      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-                      cursor: pointer;
-                      font-size: 1.5rem;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      transition: background var(--transition), transform var(--transition);
-                    }
-                    .feedback-btn:hover {
-                      background: var(--primary);
-                      color: var(--accent);
-                      transform: scale(1.1);
-                    }
+        }
 
-                    /* Modal backdrop */
-  .modal-backdrop {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.6); display: flex;
-    align-items: center; justify-content: center;
-    z-index: 2000;
-  }
-  /* Modal window */
-  .modal-window {
-    background: #fff; border-radius: 12px;
-    width: 360px; max-width: 90%; padding: 2rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    position: relative;
-  }
-  .modal-window h2 { margin-bottom: 1rem; font-family:'Poppins',sans-serif; }
-  .modal-window .tabs {
-    display: flex; gap: 1rem; margin-bottom: 1.5rem;
-  }
-  .modal-window .tabs button {
-    flex:1; padding:0.5rem; background:none; border:none;
-    border-bottom: 2px solid transparent; font-weight:600;
-    cursor: pointer; transition: border-color .3s;
-  }
-  .modal-window .tabs button.active {
-    border-color: var(--secondary);
-  }
-  .modal-content { display: none; }
-  .modal-content.active { display: block; }
-  .modal-content input {
-    width:100%; padding:0.8rem; margin-bottom:1rem;
-    border:1px solid #ddd; border-radius:8px;
-  }
-  .modal-content button {
-    width:100%; padding:0.8rem; background:var(--secondary);
-    color:var(--primary); border:none; border-radius:8px;
-    font-weight:600; cursor:pointer;
-  }
-  /* Close “X” */
-  .modal-close {
-    position: absolute; top:0.5rem; right:0.5rem;
-    background:none; border:none; font-size:1.2rem; cursor:pointer;
-  }
-  .flights-container {
-  margin-top: 2.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  justify-content: flex-start;
-}
+        .modal-content {
+          background: white;
+          padding: 2.5rem;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow-y: auto;
+          position: relative;
+          animation: modalSlideIn 0.3s ease;
+        }
 
-.flight-card {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  background: linear-gradient(120deg, #fff 70%, #f7f3ea 100%);
-  border-radius: 22px;
-  box-shadow: 0 8px 32px rgba(10,15,44,0.13), 0 1.5px 8px rgba(197,164,126,0.07);
-  padding: 0;
-  min-width: 340px;
-  max-width: 720px;
-  margin-bottom: 2rem;
-  border: 1.5px solid #ececf3;
-  overflow: hidden;
-  transition: box-shadow 0.25s, transform 0.18s;
-}
-.flight-card:hover {
-  box-shadow: 0 16px 48px rgba(10,15,44,0.18), 0 4px 24px rgba(197,164,126,0.10);
-  transform: translateY(-4px) scale(1.015);
-}
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.flight-details-pane {
-  flex: 1 1 50%;
-  padding: 2.2rem 2rem 1.7rem 2.2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid #eee;
-  background: rgba(255,255,255,0.92);
-  min-width: 220px;
-}
+        /* Tabs */
+        .tab-content {
+          display: none;
+        }
+        .tab-content.active {
+          display: block;
+        }
+        .class-section {
+          background: #f8f9fa;
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 8px;
+        }
 
-.flight-info {
-  margin-bottom: 1.2rem;
-  width: 100%;
-}
-.flight-info strong {
-  font-size: 1.3rem;
-  color: var(--primary, #0a0f2c);
-  letter-spacing: 0.01em;
-  font-family: var(--font-heading, 'Poppins', sans-serif);
-}
-.flight-info small {
-  color: #888;
-  font-size: 1.01rem;
-  margin-top: 0.3rem;
-  display: block;
-}
-
-.book-btn {
-  background: linear-gradient(90deg, var(--secondary, #c5a47e) 0%, #e8d9b5 100%);
-  color: var(--primary, #0a0f2c);
-  border: none;
-  border-radius: 10px;
-  padding: 0.8rem 1.7rem;
-  font-weight: 700;
-  font-size: 1.08rem;
-  cursor: pointer;
-  margin-top: 0.7rem;
-  margin-bottom: 0.2rem;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.18s;
-  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
-}
-.book-btn:hover {
-  background: var(--primary, #0a0f2c);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
-}
-
-.booking-form-pane {
-  flex: 1 1 50%;
-  padding: 2.2rem 2rem 1.7rem 2rem;
-  background: linear-gradient(120deg, #f7f7fa 80%, #f3e9d7 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  animation: fadeInUp 0.4s;
-  min-width: 220px;
-  border-left: 1px solid #f1e7d6;
-  box-shadow: 0 2px 12px rgba(197,164,126,0.06);
-}
-
-.booking-form-pane form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.booking-form-pane label {
-  font-size: 1rem;
-  color: #222;
-  font-weight: 500;
-  margin-bottom: 0.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-family: var(--font-sans, 'Inter', sans-serif);
-}
-
-.booking-form-pane input[type="text"],
-.booking-form-pane input[type="number"],
-.booking-form-pane select {
-  padding: 0.7rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  font-size: 1rem;
-  margin-top: 0.2rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none;
-}
-
-.booking-form-pane input:focus,
-.booking-form-pane select:focus {
-  border-color: var(--secondary, #c5a47e);
-  box-shadow: 0 0 0 2px rgba(197,164,126,0.15);
-}
-
-.booking-form-pane button[type="submit"] {
-  background: linear-gradient(90deg, var(--secondary, #c5a47e) 0%, #e8d9b5 100%);
-  color: var(--primary, #0a0f2c);
-  border: none;
-  border-radius: 8px;
-  padding: 0.9rem 1.5rem;
-  font-weight: 700;
-  font-size: 1.08rem;
-  cursor: pointer;
-  margin-top: 0.7rem;
-  box-shadow: 0 2px 8px rgba(197,164,126,0.08);
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-}
-.booking-form-pane button[type="submit"]:hover {
-  background: var(--primary, #0a0f2c);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(10,15,44,0.13);
-}
-
-@media (max-width: 900px) {
-  .flight-card {
-    flex-direction: column;
-    max-width: 98vw;
-  }
-  .flight-details-pane,
-  .booking-form-pane {
-    border-right: none;
-    border-bottom: 1px solid #eee;
-    padding: 1.2rem 1rem;
-    min-width: 0;
-  }
-  
-}
-#profileDetails p {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-#profileActions .search-btn {
-  min-width: 100px;
-  padding: 0.7rem 1.2rem;
-  font-size: 1rem;
-}
+        /* Responsive */
+        @media (max-width: 768px) {
+          .admin-layout {
+            grid-template-columns: 1fr;
+          }
+          
+          .sidebar {
+            display: none;
+          }
+        }
     </style>
 </head>
 <body>
-  <div class="hero-bg"></div>
-  <div class="modal-backdrop" id="authModal">
-    <div class="modal-window">
-      <button class="modal-close" aria-label="Close">&times;</button>
-      <h2>Welcome to Voyage Vista</h2>
-      <div id="loginTab" class="modal-content active">
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button>Login</button>
-      </div>
-    </div>
-  </div>
-  <nav id="navbar">
-    <div class="logo">Voyage Vista Admin</div>
-    <div class="nav-links">
-      <a href="admin.html">Dashboard</a>
-      <a href="#flights">Flights</a>
-      <a href="#users">Users</a>
-      <a href="#reports">Reports</a>
-      <a href="#settings">Settings</a>
-    </div>
-    <div class="nav-icons">
-      <a href="#" title="Profile"><i class="fas fa-user-circle"></i></a>
-    </div>
-    <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-  </nav>
-  <main>
-    <section class="hero" id="dashboard">
-      <div class="panel">
-        <div class="tabs">
-          <button class="tab-btn active" data-target="manage-flights">Manage Flights</button>
-          <button class="tab-btn" data-target="manage-users">Manage Users</button>
-          <button class="tab-btn" data-target="view-reports">View Reports</button>
-          <button class="tab-btn" data-target="admin-settings">Settings</button>
-        </div>
-        <div class="tab-content active" id="manage-flights">
-          <!-- Admin flights management content here -->
-          <h2>Manage Flights</h2>
-        </div>
-        <div class="tab-content" id="manage-users">
-          <!-- Admin users management content here -->
-          <h2>Manage Users</h2>
-        </div>
-        <div class="tab-content" id="view-reports">
-          <!-- Admin reports content here -->
-          <h2>View Reports</h2>
-        </div>
-        <div class="tab-content" id="admin-settings">
-          <!-- Admin settings content here -->
-          <h2>Settings</h2>
-        </div>
-      </div>
-    </section>
-  </main>
-  <script>
-    // Mobile nav toggle
-    document.querySelector(".menu-toggle").addEventListener("click", () => {
-      document.querySelector(".nav-links").classList.toggle("active");
-    });
-    // Navbar scroll effect
-    const navbar = document.getElementById("navbar");
-    window.addEventListener("scroll", () => {
-      navbar.classList.toggle("scrolled", window.scrollY > 50);
-    });
-    // Tabs logic
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(btn.dataset.target).classList.add("active");
-      });
-    });
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="logo">Voyage Vista</div>
+            <nav class="nav-links">
+                <a href="#flights" class="active" onclick="showTab('flights')">Manage Flights</a>
+                <a href="#users" onclick="showTab('users')">Manage Users</a>
+                <a href="#bookings" onclick="showTab('bookings')">Manage Bookings</a>
+            </nav>
+        </aside>
 
-    // Admin login logic: connect to backend
-    document.querySelector('#authModal .modal-content button').addEventListener('click', function() {
-      const email = document.querySelector('#authModal input[type="email"]').value;
-      const password = document.querySelector('#authModal input[type="password"]').value;
+        <main class="main-content">
+            <!-- Flights Management -->
+            <div id="flights" class="tab-content active">
+                <div class="panel">
+                    <h2>Flight Management</h2>
+                    <button class="action-btn add-btn" onclick="showFlightModal()">Add New Flight</button>
+                    
+                    <table class="flights-table">
+                        <thead>
+                            <tr>
+                                <th>Flight #</th>
+                                <th>Airline</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="flightsTableBody">
+                            <!-- Flights data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-      fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          alert('Login failed: ' + data.error);
-        } else {
-          alert('Successfully logged in');
-          document.getElementById('authModal').style.display = 'none';
-          // Optionally, store user info in localStorage/sessionStorage
-          // localStorage.setItem('adminEmail', email);
+            <!-- Users Management -->
+            <div id="users" class="tab-content">
+                <div class="panel">
+                    <h2>User Management</h2>
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bookings Management -->
+            <div id="bookings" class="tab-content">
+                <div class="panel">
+                    <h2>Booking Management</h2>
+                    <table class="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>User</th>
+                                <th>Flight</th>
+                                <th>Route</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Bookings data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Flight Modal -->
+    <div class="modal" id="flightModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add New Flight</h3>
+            <form id="flightForm" onsubmit="handleFlightSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="flight_number">Flight Number*</label>
+                        <input type="text" id="flight_number" name="flight_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="airline">Airline Name*</label>
+                        <input type="text" id="airline" name="airline" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="departure">From*</label>
+                        <input type="text" id="departure" name="departure" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="arrival">To*</label>
+                        <input type="text" id="arrival" name="arrival" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date*</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                </div>
+
+                <!-- Class Details -->
+                <div class="class-section">
+                    <h4>First Class</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="first_seats">Number of Seats</label>
+                            <input type="number" id="first_seats" name="first_seats" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="first_adult">Adult Price</label>
+                            <input type="number" id="first_adult" name="first_adult_price" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="first_child">Child Price</label>
+                            <input type="number" id="first_child" name="first_child_price" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="class-section">
+                    <h4>Business Class</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="business_seats">Number of Seats</label>
+                            <input type="number" id="business_seats" name="business_seats" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="business_adult">Adult Price</label>
+                            <input type="number" id="business_adult" name="business_adult_price" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="business_child">Child Price</label>
+                            <input type="number" id="business_child" name="business_child_price" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="class-section">
+                    <h4>Premium Economy</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="premium_seats">Number of Seats</label>
+                            <input type="number" id="premium_seats" name="premium_seats" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="premium_adult">Adult Price</label>
+                            <input type="number" id="premium_adult" name="premium_adult_price" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="premium_child">Child Price</label>
+                            <input type="number" id="premium_child" name="premium_child_price" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="class-section">
+                    <h4>Economy Class</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="economy_seats">Number of Seats</label>
+                            <input type="number" id="economy_seats" name="economy_seats" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="economy_adult">Adult Price</label>
+                            <input type="number" id="economy_adult" name="economy_adult_price" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="economy_child">Child Price</label>
+                            <input type="number" id="economy_child" name="economy_child_price" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="action-btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="action-btn add-btn">Save Flight</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal handling
+        const modal = document.getElementById('flightModal');
+        const flightForm = document.getElementById('flightForm');
+
+        function showFlightModal() {
+            modal.style.display = 'block';
+            flightForm.reset(); // Clear form
         }
-      })
-      .catch(() => alert('Login failed: Server error'));
-    });
 
-    // Optional: Close modal on X click
-    document.querySelector('.modal-close').addEventListener('click', function() {
-      document.getElementById('authModal').style.display = 'none';
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Close modal if clicking outside
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Load data based on active tab
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            switch(tabName) {
+                case 'flights':
+                    loadFlights();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'bookings':
+                    loadBookings();
+                    break;
+            }
+        }
+
+        // Load flights
+        function loadFlights() {
+            fetch('http://localhost:3000/api/admin/flights')
+                .then(res => res.json())
+                .then(flights => {
+                    const tbody = document.getElementById('flightsTableBody');
+                    tbody.innerHTML = flights.map(flight => `
+                        <tr>
+                            <td>${flight.flight_number}</td>
+                            <td>${flight.airline}</td>
+                            <td>${flight.departure}</td>
+                            <td>${flight.arrival}</td>
+                            <td>${new Date(flight.date).toLocaleDateString()}</td>
+                            <td>${flight.status}</td>
+                            <td>
+                                <button onclick="editFlight(${flight.id})" class="action-btn edit-btn">Edit</button>
+                                <button onclick="deleteFlight(${flight.id})" class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                });
+        }
+
+        // Load users
+        function loadUsers() {
+            fetch('http://localhost:3000/api/admin/users')
+                .then(res => res.json())
+                .then(users => {
+                    const tbody = document.getElementById('usersTableBody');
+                    tbody.innerHTML = users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                });
+        }
+
+        // Load bookings
+        function loadBookings() {
+  fetch('http://localhost:3000/api/admin/booking')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(bookings => {
+      const tbody = document.getElementById('bookingsTableBody');
+
+      if (!Array.isArray(bookings) || bookings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No bookings found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = bookings.map(booking => `
+        <tr>
+          <td>${booking.booking_id}</td>
+          <td>${booking.first_name || '-'} ${booking.last_name || '-'}</td>
+          <td>${booking.flight_number} (${booking.airline})</td>
+          <td>${booking.departure} → ${booking.arrival}</td>
+          <td>${booking.status || 'Confirmed'}</td>
+          <td>${new Date(booking.booking_date).toLocaleDateString()}</td>
+          <td>
+            <button onclick="alert('More features coming soon')" class="action-btn">View</button>
+          </td>
+        </tr>
+      `).join('');
+    })
+    .catch(err => {
+      console.error('Booking fetch error:', err);
+      document.getElementById('bookingsTableBody').innerHTML =
+        '<tr><td colspan="7">Failed to load bookings.</td></tr>';
     });
-  </script>    </style></body></html>
+}
+
+        // Update the flight form submission handler
+        document.getElementById('flightForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const flightData = {
+                flight_number: document.getElementById('flight_number').value,
+                airline: document.getElementById('airline').value,
+                departure: document.getElementById('departure').value,
+                arrival: document.getElementById('arrival').value,
+                date: document.getElementById('date').value,
+                classes: {
+                    first: {
+                        seats: parseInt(document.querySelector('[name="first_seats"]').value),
+                        adult_price: parseFloat(document.querySelector('[name="first_adult_price"]').value),
+                        child_price: parseFloat(document.querySelector('[name="first_child_price"]').value)
+                    },
+                    business: {
+                        seats: parseInt(document.querySelector('[name="business_seats"]').value),
+                        adult_price: parseFloat(document.querySelector('[name="business_adult_price"]').value),
+                        child_price: parseFloat(document.querySelector('[name="business_child_price"]').value)
+                    },
+                    premium: {
+                        seats: parseInt(document.querySelector('[name="premium_seats"]').value),
+                        adult_price: parseFloat(document.querySelector('[name="premium_adult_price"]').value),
+                        child_price: parseFloat(document.querySelector('[name="premium_child_price"]').value)
+                    },
+                    economy: {
+                        seats: parseInt(document.querySelector('[name="economy_seats"]').value),
+                        adult_price: parseFloat(document.querySelector('[name="economy_adult_price"]').value),
+                        child_price: parseFloat(document.querySelector('[name="economy_child_price"]').value)
+                    }
+                }
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/flights', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(flightData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Flight added successfully');
+                    document.getElementById('flightModal').style.display = 'none';
+                    loadFlights(); // Refresh the flights table
+                } else {
+                    throw new Error(data.error || 'Failed to add flight');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add flight: ' + error.message);
+            }
+        });
+
+        // Load flights when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFlights();
+        });
+    </script>
+</body>
+</html>
