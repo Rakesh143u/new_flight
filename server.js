@@ -1,6 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'rakeshraki935390@gmail.com',     // your email
+    pass: 'Rakesh@123'        // use App Password (not your Gmail password)
+  }
+});
+
 
 // Create database connection
 const db = mysql.createConnection({
@@ -141,6 +151,7 @@ app.post('/api/admin/flights', (req, res) => {
 
         // First insert the route
         db.query(
+          
             'INSERT INTO routes (airline, flight_number, departure, arrival, date, status) VALUES (?, ?, ?, ?, ?, ?)',
             [airline, flight_number, departure, arrival, date, 'Scheduled'],
             (err, result) => {
@@ -195,6 +206,28 @@ app.post('/api/admin/flights', (req, res) => {
     });
 });
 
+app.post('/api/update-luggage', (req, res) => {
+  const { booking_id, luggage_kg } = req.body;
+
+  const maxWeight = 30; // limit, e.g., 30 kg
+  const costPerKg = 500; // ₹500 per kg over 15kg
+
+  if (luggage_kg > maxWeight) {
+    return res.status(400).json({ message: `Maximum allowed luggage is ${maxWeight} kg` });
+  }
+
+  const freeAllowance = 15;
+  const chargeableWeight = Math.max(0, luggage_kg - freeAllowance);
+  const luggage_cost = chargeableWeight * costPerKg;
+
+  const query = `UPDATE bookings SET luggage_kg = ?, luggage_cost = ? WHERE id = ?`;
+
+  db.query(query, [luggage_kg, luggage_cost, booking_id], (err, result) => {
+    if (err) return res.status(500).json({ message: 'Error updating luggage info' });
+    res.json({ message: 'Luggage updated successfully', luggage_kg, luggage_cost });
+  });
+});
+
 // Get all flights for admin
 app.get('/api/admin/flights', (req, res) => {
     db.query(`
@@ -225,10 +258,7 @@ app.get('/api/admin/users', (req, res) => {
 // Get bookings for a specific user by email
 app.get('/api/my-bookings', (req, res) => {
   const user_email = req.query.user_email;
-
-  if (!user_email) {
-    return res.status(400).json({ error: 'User email is required' });
-  }
+  if (!user_email) return res.status(400).json({ error: 'User email is required' });
 
   const query = `
     SELECT 
@@ -251,15 +281,12 @@ app.get('/api/my-bookings', (req, res) => {
     WHERE b.user_email = ?
     ORDER BY b.booking_date DESC
   `;
-
   db.query(query, [user_email], (err, results) => {
-    if (err) {
-      console.error('Database error:', err);
-      return res.status(500).json({ error: 'Error retrieving bookings' });
-    }
+    if (err) return res.status(500).json({ error: 'Error retrieving bookings' });
     res.json(results);
   });
 });
+
 
 // DELETE /api/cancel-booking/:id
 app.delete('/api/cancel-booking/:id', (req, res) => {
@@ -319,43 +346,43 @@ app.delete('/api/cancel-booking/:id', (req, res) => {
 
 // Bookings endpoint
 app.post('/api/bookings', (req, res) => {
-    const { flight_id, class_type, first_name, last_name, email, phone, country } = req.body;
+  const { flight_id, class_type, first_name, last_name, email, phone, country } = req.body;
 
-    db.beginTransaction(err => {
-        if (err) return res.status(500).json({ error: err.message });
+  db.beginTransaction(err => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    // now only three columns
+    db.query(
+      'INSERT INTO bookings (user_email, route_id, class_type) VALUES (?, ?, ?)',
+      [email, flight_id, class_type],
+      (err, bookingResult) => {
+        if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+        const booking_id = bookingResult.insertId;
 
         db.query(
-            'INSERT INTO bookings (user_email, route_id,class_type) VALUES (?, ?, ?)',
-            [email, flight_id,class_type],
-            (err, bookingResult) => {
+          'INSERT INTO passenger_details (booking_id, title, first_name, last_name, email, phone, country) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [booking_id, 'Mr', first_name, last_name, email, phone, country],
+          err => {
+            if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+            db.query(
+              'UPDATE flight_classes SET available_seats = available_seats - 1 WHERE flight_id = ? AND class_type = ?',
+              [flight_id, class_type],
+              err => {
                 if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
-
-                const booking_id = bookingResult.insertId;
-
-                db.query(
-                    'INSERT INTO passenger_details (booking_id, title, first_name, last_name, email, phone, country) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    [booking_id, 'Mr', first_name, last_name, email, phone, country],
-                    (err) => {
-                        if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
-
-                        db.query(
-                            'UPDATE flight_classes SET available_seats = available_seats - 1 WHERE flight_id = ? AND class_type = ?',
-                            [flight_id, class_type],
-                            (err) => {
-                                if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
-
-                                db.commit(err => {
-                                    if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
-                                    res.json({ message: 'Booking successful', booking_id });
-                                });
-                            }
-                        );
-                    }
-                );
-            }
+                db.commit(err => {
+                  if (err) return db.rollback(() => res.status(500).json({ error: err.message }));
+                  res.json({ message: 'Booking successful', booking_id });
+                });
+              }
+            );
+          }
         );
-    });
+      }
+    );
+  });
 });
+
+
 
 
 // Add this endpoint for searching flights
@@ -447,6 +474,41 @@ app.get('/api/admin/booking', (req, res) => {
       return res.status(500).json({ error: err.message });
     }
     res.json(results);
+  });
+});
+// GET /api/whatson?departure=Bengaluru&arrival=New%20Delhi&date=2025-06-30
+app.get('/api/whatson', (req, res) => {
+  const { departure, arrival, date } = req.query;
+  if (!departure || !arrival || !date) {
+    return res.status(400).json({ error: 'departure, arrival & date are required' });
+  }
+
+  // 1) Find the route_id
+  const routeSql = `
+    SELECT id
+    FROM routes
+    WHERE LOWER(departure) = LOWER(?) 
+      AND LOWER(arrival)   = LOWER(?) 
+      AND DATE(date)       = DATE(?)
+    LIMIT 1
+  `;
+  db.query(routeSql, [departure.trim(), arrival.trim(), date], (err, routeRows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (routeRows.length === 0) {
+      return res.json([]); // no matching flight → no services
+    }
+    const routeId = routeRows[0].id;
+
+    // 2) Fetch in‑flight services for that route
+    const svcSql = `
+      SELECT service_name, description
+      FROM inflight_services
+      WHERE route_id = ?
+    `;
+    db.query(svcSql, [routeId], (err2, svcRows) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+      res.json(svcRows);
+    });
   });
 });
 

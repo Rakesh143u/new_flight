@@ -82,7 +82,7 @@
               <i class="fas fa-plane"></i> Search flights
             </button>
             <button class="tab-btn" data-target="manage-form">
-              <i class="fas fa-tag"></i> Manage booking / Check in
+              <i class="fas fa-tag"></i> Luggage
             </button>
             <button class="tab-btn" data-target="whatson-form">
               <i class="fas fa-pen-nib"></i> What's on your flight
@@ -116,7 +116,7 @@
             <form class="form-grid">
               <div class="field">
                 <i class="fas fa-user"></i
-                ><input type="text" placeholder="Last name" />
+                ><input type="text" placeholder="KG" />
               </div>
               <div class="field">
                 <i class="fas fa-ticket-alt"></i
@@ -126,24 +126,27 @@
               <button class="search-btn" type="submit">Check in</button>
             </form>
           </div>
-          <div class="tab-content" id="whatson-form">
-            <form class="form-grid">
-              <div class="field">
-                <i class="fas fa-map-marker-alt"></i
-                ><input type="text" placeholder="Departure airport" />
-              </div>
-              <div class="field">
-                <i class="fas fa-map-marker-alt"></i
-                ><input type="text" placeholder="Arrival airport" />
-              </div>
-              <div class="field">
-                <i class="fas fa-calendar-alt"></i><input type="date" />
-              </div>
-              <button class="search-btn" type="submit">
-                See what's on <i class="fas fa-arrow-right"></i>
-              </button>
-            </form>
-          </div>
+          <div id="whatson-form" class="tab-content">
+  <h3>What’s On Your Flight</h3>
+  <form>
+    <div class="field">
+      <i class="fas fa-plane-departure"></i>
+      <input name="departure" type="text" placeholder="From (e.g. Bengaluru)" required>
+    </div>
+    <div class="field">
+      <i class="fas fa-plane-arrival"></i>
+      <input name="arrival" type="text" placeholder="To (e.g. New Delhi)" required>
+    </div>
+    <div class="field">
+      <i class="fas fa-calendar-alt"></i>
+      <input name="date" type="date" required>
+    </div>
+    <button class="search-btn" type="submit">Find Services</button>
+  </form>
+
+  <div id="whatson-results" class="results"></div>
+</div>
+
           <div class="tab-content" id="status-form">
             <form class="form-grid">
               <div class="field">
@@ -478,37 +481,37 @@
   }
   });
 
-document.querySelector('#whatson-form form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const fields = this.querySelectorAll('input');
-  const data = {
-    departure: fields[0].value,
-    arrival: fields[1].value,
-    date: fields[2].value
-  };
-  fetch('http://localhost:3000/api/whatson', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(services => {
-    let html = '<h3>What\'s on your flight:</h3>';
-    if (services.length === 0) {
-      html += '<p>No inflight services found for this flight.</p>';
-    } else {
-      services.forEach(s => {
-        html += `<div>
-          <strong>${s.service_name}</strong>: ${s.description}
-        </div>`;
-      });
-    }
-    document.querySelector('#whatson-form').innerHTML = html;
-  })
-  .catch(err => {
-    document.querySelector('#whatson-form').innerHTML = `<p>Error: ${err.message}</p>`;
-  });
-});
+// document.querySelector('#whatson-form form').addEventListener('submit', function(e) {
+//   e.preventDefault();
+//   const fields = this.querySelectorAll('input');
+//   const data = {
+//     departure: fields[0].value,
+//     arrival: fields[1].value,
+//     date: fields[2].value
+//   };
+//   fetch('http://localhost:3000/api/whatson', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data)
+//   })
+//   .then(res => res.json())
+//   .then(services => {
+//     let html = '<h3>What\'s on your flight:</h3>';
+//     if (services.length === 0) {
+//       html += '<p>No inflight services found for this flight.</p>';
+//     } else {
+//       services.forEach(s => {
+//         html += `<div>
+//           <strong>${s.service_name}</strong>: ${s.description}
+//         </div>`;
+//       });
+//     }
+//     document.querySelector('#whatson-form').innerHTML = html;
+//   })
+//   .catch(err => {
+//     document.querySelector('#whatson-form').innerHTML = `<p>Error: ${err.message}</p>`;
+//   });
+// });
 
 // Signup
 document.querySelector('#signup-form').addEventListener('submit', function(e) {
@@ -569,7 +572,8 @@ document
     const form = e.target;
     const departure = form.departure.value.trim();
     const arrival   = form.arrival.value.trim();
-    const date      = form.date.value;
+    const dateInput = new Date(form.date.value);
+    const date = dateInput.toISOString().split('T')[0];
 
     const resultsContainer = document.getElementById('searchResults');
     resultsContainer.innerHTML = '<p>Searching…</p>';
@@ -607,7 +611,7 @@ document
       <form>
         <label>
         Class:
-        <select name="class_type" class="class-select" required>
+        <select  id="classSelect" name="class_type" class="class-select" required>
           <option value="">Select Class</option>
           ${Object.entries(f.classes)
             .filter(([type]) => ['first','business','premium','economy'].includes(type))
@@ -693,6 +697,7 @@ document
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         flight_id: flightId,
+        class_type: document.getElementById('classSelect').value,
         first_name: firstName,
         last_name: lastName,
         email,
@@ -743,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '<h3>Your Bookings</h3><ul>';
         data.forEach(booking => {
           html += `
-            <li data-booking-id="${booking.id}">
+            <li data-booking-id="${booking.booking_id}">
               <strong>${booking.flight_number}</strong> — ${booking.departure} → ${booking.arrival} (${new Date(booking.date).toLocaleString()})
               <br>Class: ${booking.class_type}
               <br>Status: ${booking.status || 'Confirmed'}
@@ -753,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <br>Email: ${booking.passenger_email}
               <br>Phone: ${booking.phone}
               <br>Country: ${booking.country}
-              <br><button class="cancel-booking-btn" data-id="${booking.id}">Cancel Booking</button>
+              <br><button class="cancel-booking-btn" data-id="${booking.booking_id}">Cancel Booking</button>
             </li>`;
         });
         html += '</ul>';
@@ -849,6 +854,53 @@ document.querySelector('.fa-user-circle').addEventListener('click', function(e) 
 
   document.getElementById('profileModal').style.display = 'flex';
 });
+document
+  .querySelector('#whatson-form form')
+  .addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const dep  = this.departure.value.trim();
+    const arr  = this.arrival.value.trim();
+    const date = this.date.value; // yyyy‑mm‑dd
+
+    const resultsEl = document.getElementById('whatson-results');
+    resultsEl.innerHTML = '<p>Loading services…</p>';
+
+    try {
+      // GET with query params
+      const url = new URL('http://localhost:3000/api/whatson');
+      url.searchParams.set('departure', dep);
+      url.searchParams.set('arrival', arr);
+      url.searchParams.set('date', date);
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+      const services = await res.json();
+      if (!Array.isArray(services) || services.length === 0) {
+        resultsEl.innerHTML = '<p>No in‑flight services found for this route.</p>';
+        return;
+      }
+
+      // Render list
+      let html = '<ul class="service-list">';
+      services.forEach(s => {
+        html += `
+          <li class="service-card">
+            <h4>${s.service_name}</h4>
+            <p>${s.description}</p>
+          </li>`;
+      });
+      html += '</ul>';
+      resultsEl.innerHTML = html;
+
+    } catch (err) {
+      console.error(err);
+      resultsEl.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+    }
+  });
+
+
 </script>
 <style>
 .cancel-booking-btn {
