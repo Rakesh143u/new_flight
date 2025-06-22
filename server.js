@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'rakeshraki935390@gmail.com',     // your email
+    user: 'rakeshraki935390',     // your email
     pass: 'Rakesh@123'        // use App Password (not your Gmail password)
   }
 });
@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Rakesh@123', // Your MySQL password
+    password: 'Dancerraj@12', // Your MySQL password
     database: 'new'
 });
 
